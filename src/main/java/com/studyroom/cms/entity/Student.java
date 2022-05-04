@@ -6,6 +6,7 @@ public class Student {
     private String name;
     private String campus;
     private int finish_year;
+    private String password;
 
     public String getPassword() {
         return password;
@@ -14,8 +15,6 @@ public class Student {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    private String password;
 
     public String getStuNo() {
         return stuNo;

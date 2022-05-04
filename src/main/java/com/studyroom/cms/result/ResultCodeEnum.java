@@ -6,7 +6,9 @@ public enum ResultCodeEnum {
 
     MISSPARAM(10001,"参数缺失"),
     USERNOTEXIST(10002,"用户不存在"),
-    LOGINFAIL(10003,"密码错误");
+    LOGINFAIL(10003,"密码错误"),
+
+    USERHASEXIST(10004,"用户已存在");
 
     private Integer code;
     private String desc;
