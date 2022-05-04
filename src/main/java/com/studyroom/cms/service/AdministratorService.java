@@ -11,9 +11,9 @@ public class AdministratorService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public String getPassword(String adminNo) throws Exception{
+    public String getPassword(String number) throws Exception{
         String password = "";
-        String sql = "select password from administrator where adminNo='" + adminNo + "' and is_valid=1";
+        String sql = "select password from administrator where number='" + number + "' and is_valid=1";
         try{
             password = jdbcTemplate.queryForObject(sql,String.class);
         }catch (EmptyResultDataAccessException e){

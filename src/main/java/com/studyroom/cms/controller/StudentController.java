@@ -1,8 +1,8 @@
 package com.studyroom.cms.controller;
 
+import com.studyroom.cms.entity.Student;
 import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.ResultCodeEnum;
-import com.studyroom.cms.service.AdministratorService;
 import com.studyroom.cms.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/student")
@@ -24,7 +25,7 @@ public class StudentController {
         try{
             HashMap<String,String> needParams = new HashMap<>();
             needParams.put("type",request.getParameter("type"));
-            needParams.put("stuNo",request.getParameter("stuno"));
+            needParams.put("number",request.getParameter("number"));
             needParams.put("name",request.getParameter("name"));
             needParams.put("campus",request.getParameter("campus"));
             needParams.put("finish_year",request.getParameter("finish_year"));
@@ -52,7 +53,7 @@ public class StudentController {
                 if (effectRow == 0) {
                     return Result.fail(ResultCodeEnum.USERNOTEXIST);
                 }else{
-                    return Result.success(new HashMap<String,Object>(){{put("id",needParams.get("stuNo"));}});
+                    return Result.success(new HashMap<String,Object>(){{put("id",needParams.get("number"));}});
                 }
             }
         }catch (Exception e){
@@ -63,17 +64,31 @@ public class StudentController {
     @RequestMapping("/delete")
     public Result Delete(HttpServletRequest request, HttpServletResponse response){
         try{
-            String stuNo = request.getParameter("stuno");
-            if (stuNo == null || stuNo == ""){
+            String number = request.getParameter("number");
+            if (number == null || number == ""){
                 return Result.fail(ResultCodeEnum.MISSPARAM);
             }
 
-            int effectRow = studentService.delOne(stuNo);
+            int effectRow = studentService.delOne(number);
             if (effectRow == 0) {
                 return Result.fail(ResultCodeEnum.USERNOTEXIST);
             }else{
-                return Result.success(new HashMap<String,Object>(){{put("id",stuNo);}});
+                return Result.success(new HashMap<String,Object>(){{put("id",number);}});
             }
+        }catch (Exception e){
+            return Result.error();
+        }
+    }
+
+    @RequestMapping("/list")
+    public Result List(HttpServletRequest request, HttpServletResponse response){
+        try{
+            String pageStr = request.getParameter("page");
+            String pageSizeStr = request.getParameter("page_size");
+            int page = (pageStr != null &&  pageStr != "") ? Integer.parseInt(pageStr) : 1;
+            int pageSize = (pageSizeStr != null &&  pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
+            HashMap<String,Object> ret = studentService.getList(page,pageSize);
+            return Result.success(ret);
         }catch (Exception e){
             return Result.error();
         }

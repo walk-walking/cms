@@ -2,7 +2,7 @@ package com.studyroom.cms.entity;
 
 public class Student {
 
-    private String stuNo;
+    private String number;
     private String name;
     private String campus;
     private int finish_year;
@@ -16,12 +16,12 @@ public class Student {
         this.password = password;
     }
 
-    public String getStuNo() {
-        return stuNo;
+    public String getNumber() {
+        return number;
     }
 
-    public void setStuNo(String stuNo) {
-        this.stuNo = stuNo;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getName() {
