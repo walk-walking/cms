@@ -6,18 +6,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AdministratorService {
+public class StudentService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public String getPassword(String adminNo) throws Exception{
+    public String getPassword(String stuNo) throws Exception{
         String password = "";
-        String sql = "select password from administrator where adminNo='" + adminNo + "' and is_valid=1";
+        String sql = "select password from student where stuNo='" + stuNo + "' and is_valid=1";
         try{
             password = jdbcTemplate.queryForObject(sql,String.class);
         }catch (EmptyResultDataAccessException e){
-            //未找到该管理员
+            //未找到该学生
         }catch (Exception e){
             //其他异常错误
             e.printStackTrace();
@@ -26,5 +26,4 @@ public class AdministratorService {
 
         return password;
     }
-
 }

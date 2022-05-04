@@ -1,14 +1,15 @@
 package com.studyroom.cms.controller;
 
+import com.studyroom.cms.result.Result;
+import com.studyroom.cms.result.ResultCodeEnum;
 import com.studyroom.cms.service.AdministratorService;
+import com.studyroom.cms.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -16,37 +17,31 @@ public class LoginController {
 
     @Autowired
     private AdministratorService adminService;
+    @Autowired
+    private StudentService studentService;
 
     @RequestMapping("/login")
-    public Map<String,Object> Login(HttpServletRequest request, HttpServletResponse response){
-        Map<String,Object> ret=new HashMap<>();
+    public Result Login(HttpServletRequest request, HttpServletResponse response){
         try{
             String username=request.getParameter("username");
             String password= request.getParameter("password");
-            String type=request.getParameter("selected");
-            if (type == null){
-                type = "2"; //默认是学生登录
+            String type=request.getParameter("type");
+            if (username == null || password == null || type == null){
+                return Result.fail(ResultCodeEnum.MISSPARAM);
             }
 
-            String state = "登录失败";
-            if (Integer.parseInt(type) == 1){
-                String pw = adminService.getPassword(username);
-                if (password.equals(pw)){
-                    state = "登录成功";
-                }
+            String pw = Integer.parseInt(type) == 1 ? adminService.getPassword(username) : studentService.getPassword(username);
+            if (password.equals(pw)){
+                return Result.success();
+            }else if(pw == ""){
+                return Result.fail(ResultCodeEnum.USERNOTEXIST);
             }else{
-                //TODO  学生登录
+                //密码不相等
+                return Result.fail(ResultCodeEnum.LOGINFAIL);
             }
-
-            ret.put("code",0);
-            ret.put("state",state);
-            return ret;
         }catch (Exception e){
-            e.printStackTrace();
-            ret.put("code",1);
-            ret.put("state","后台获取数据失败");
-            return ret;
+            //数据库执行异常
+            return Result.error();
         }
-
     }
 }
