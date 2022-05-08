@@ -75,12 +75,13 @@ public class StudentService {
 
     public Student getOneByNumber(String number) throws Exception{
         Student stu = null;
-        String sql = "select `number`,`name`,`campus`,`finish_year`,`password` from `student` where `number`='" + number + "' and `is_valid`=1";
+        String sql = "select `id`,`number`,`name`,`campus`,`finish_year`,`password` from `student` where `number`='" + number + "' and `is_valid`=1";
         try{
             stu = jdbcTemplate.queryForObject(sql, new RowMapper<Student>() {
                 @Override
                 public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
                     Student row = new Student();
+                    row.setId(rs.getInt("id"));
                     row.setNumber(rs.getString("number"));
                     row.setName(rs.getString("name"));
                     row.setCampus(rs.getString("campus"));
@@ -130,27 +131,28 @@ public class StudentService {
     }
 
     public int delOne(String number) throws Exception{
-        int effectRow = 0;
+        int effecId = 0;
         try{
             Student stu = getOneByNumber(number);
             if (stu != null){
                 String sql = "update `student` set `is_valid` = 0 where `number`='" + number + "'";
-                effectRow = jdbcTemplate.update(sql);
-                System.out.println(effectRow);
+                if (jdbcTemplate.update(sql) > 0){
+                    effecId = stu.getId();
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
             throw new Exception("mysql execute error");
         }
 
-        return effectRow;
+        return effecId;
     }
 
     public HashMap<String,Object> getList(int page,int pageSize) throws Exception{
         HashMap<String,Object> res = new HashMap<>();
         int offset = (page - 1) * pageSize;
         int rowcnt = pageSize;
-        String sql = "select `number`,`name`,`campus`,`finish_year` from `student` where `is_valid`=1 order by `number` desc limit " + offset + "," + rowcnt;
+        String sql = "select `number`,`name`,`campus`,`finish_year` from `student` where `is_valid`=1 order by `id` desc limit " + offset + "," + rowcnt;
         try{
             List<Map<String,Object>> rs = jdbcTemplate.queryForList(sql);
             int count = getCount();

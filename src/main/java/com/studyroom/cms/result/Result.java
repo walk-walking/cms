@@ -34,4 +34,11 @@ public class Result extends HashMap<String,Object> {
         return ret;
     }
 
+    public static Result listSuccess(int count, Object data){
+        Result ret = new Result();
+        ret.put("data",data);
+        ret.put("count",count);
+        return ret;
+    }
+
 }

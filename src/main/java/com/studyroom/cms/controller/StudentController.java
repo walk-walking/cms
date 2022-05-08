@@ -69,11 +69,11 @@ public class StudentController {
                 return Result.fail(ResultCodeEnum.MISSPARAM);
             }
 
-            int effectRow = studentService.delOne(number);
-            if (effectRow == 0) {
+            int effectId = studentService.delOne(number);
+            if (effectId == 0) {
                 return Result.fail(ResultCodeEnum.USERNOTEXIST);
             }else{
-                return Result.success(new HashMap<String,Object>(){{put("id",number);}});
+                return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
             }
         }catch (Exception e){
             return Result.error();
@@ -84,11 +84,11 @@ public class StudentController {
     public Result List(HttpServletRequest request, HttpServletResponse response){
         try{
             String pageStr = request.getParameter("page");
-            String pageSizeStr = request.getParameter("page_size");
+            String pageSizeStr = request.getParameter("limit");
             int page = (pageStr != null &&  pageStr != "") ? Integer.parseInt(pageStr) : 1;
             int pageSize = (pageSizeStr != null &&  pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
             HashMap<String,Object> ret = studentService.getList(page,pageSize);
-            return Result.success(ret);
+            return Result.listSuccess(Integer.valueOf(ret.get("count").toString()),ret.get("list"));
         }catch (Exception e){
             return Result.error();
         }

@@ -8,7 +8,10 @@ public enum ResultCodeEnum {
     USERNOTEXIST(10002,"用户不存在"),
     LOGINFAIL(10003,"密码错误"),
 
-    USERHASEXIST(10004,"用户已存在");
+    USERHASEXIST(10004,"用户已存在"),
+    ENTITYHASEXIST(10005,"实体已存在"),
+    ENTITYNOTEXIST(10005,"实体不存在");
+
 
     private Integer code;
     private String desc;
