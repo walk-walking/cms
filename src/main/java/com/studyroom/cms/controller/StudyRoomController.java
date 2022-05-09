@@ -79,7 +79,6 @@ public class StudyRoomController {
             HashMap<String,Object> ret = studyRoomService.getList(page,pageSize,condition);
             return Result.listSuccess(Integer.valueOf(ret.get("count").toString()),ret.get("list"));
         }catch (Exception e){
-            e.printStackTrace();
             return Result.error();
         }
     }

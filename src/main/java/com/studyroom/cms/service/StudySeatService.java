@@ -1,13 +1,20 @@
 package com.studyroom.cms.service;
 
 import com.studyroom.cms.entity.StudyRoom;
+import com.studyroom.cms.entity.StudySeat;
 import javafx.beans.binding.ObjectExpression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StudySeatService {
@@ -41,5 +48,91 @@ public class StudySeatService {
             throw new Exception("mysql execute error");
         }
         return effectRow;
+    }
+
+    public HashMap<String,Object> getListByRoomNumber(int page, int pageSize, String roomNumber) throws Exception{
+        HashMap<String,Object> res = new HashMap<>();
+        int offset = (page - 1) * pageSize;
+        int rowcnt = pageSize;
+        String sql = "select `number`,`is_valid`,`has_plug` from `study_seat` where `room_number`='"+ roomNumber +"' order by `id` desc limit " + offset + "," + rowcnt;
+        try{
+            List<Map<String,Object>> rs = jdbcTemplate.queryForList(sql);
+            int count = getCountByRoomNumber(roomNumber);
+            res.put("count",count);
+            List<HashMap<String,Object>> data = new ArrayList<>();
+            for (int i = 0; i < rs.size(); ++i){
+                HashMap<String,Object> row = new HashMap<>();
+                row.put("number",rs.get(i).get("number"));
+                row.put("is_valid",rs.get(i).get("is_valid"));
+                row.put("has_plug",rs.get(i).get("has_plug"));
+                data.add(row);
+            }
+            res.put("list",data);
+        }catch (Exception e){
+            //其他异常错误
+            e.printStackTrace();
+            throw new Exception("mysql execute error");
+        }
+        return res;
+    }
+
+    public int getCountByRoomNumber(String roomNumber) throws Exception{
+        int count = 0;
+        String sql = "select count(*) from `study_seat` where `room_number`='" + roomNumber + "'";
+        try{
+            count = jdbcTemplate.queryForObject(sql,Integer.class);
+        }catch (Exception e){
+            //其他异常错误
+            e.printStackTrace();
+            throw new Exception("mysql execute error");
+        }
+
+        return count;
+    }
+
+    public StudySeat getSeatByMixNumber(String roomNumber, String number) throws Exception{
+        StudySeat stuSeat = null;
+        String sql = "select `id`,`number`,`room_number`,`has_plug`,`is_valid` from study_seat where ";
+        sql += "`room_number`='" +roomNumber +"' and `number`='" + number +"'";
+        try{
+            stuSeat = jdbcTemplate.queryForObject(sql, new RowMapper<StudySeat>() {
+                @Override
+                public StudySeat mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    StudySeat row = new StudySeat();
+                    row.setId(rs.getInt("id"));
+                    row.setNumber(rs.getString("number"));
+                    row.setRoom_number(rs.getString("room_number"));
+                    row.setHas_plug(rs.getInt("has_plug"));
+                    row.setIs_valid(rs.getInt("is_valid"));
+                    return row;
+                }
+            });
+        }catch (EmptyResultDataAccessException e){
+            //未找到该自习座位
+        }catch (Exception e){
+            //其他异常错误
+            e.printStackTrace();
+            throw new Exception("mysql execute error");
+        }
+
+        return stuSeat;
+    }
+
+    public int modHasPlug(String roomNumber, String number, int hasFlag) throws Exception{
+        int effectId = 0;
+        try{
+            StudySeat studySeat = getSeatByMixNumber(roomNumber,number);
+            if (studySeat != null){
+                String sql = "update `study_seat` set `has_plug`= "+ hasFlag + " where `id`=" + studySeat.getId();
+                if(jdbcTemplate.update(sql) > 0){
+                    effectId = studySeat.getId();
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new Exception("mysql execute error");
+        }
+
+        return effectId;
     }
 }
