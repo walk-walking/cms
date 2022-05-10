@@ -1,5 +1,6 @@
 package com.studyroom.cms.controller;
 
+import com.studyroom.cms.result.Const;
 import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.ResultCodeEnum;
 import com.studyroom.cms.service.AdministratorService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 
 @RestController
@@ -22,7 +24,7 @@ public class LoginController {
     private StudentService studentService;
 
     @RequestMapping("/login")
-    public Result Login(HttpServletRequest request, HttpServletResponse response){
+    public Result Login(HttpServletRequest request, HttpServletResponse response, HttpSession session){
         try{
             HashMap<String,String> needParams = new HashMap<>();
             needParams.put("type",request.getParameter("type"));
@@ -37,6 +39,10 @@ public class LoginController {
 
             String pw = Integer.parseInt(needParams.get("type")) == 1 ? adminService.getPassword(needParams.get("username")) : studentService.getPassword(needParams.get("username"));
             if (needParams.get("password").equals(pw)){
+
+                //set session Attribute
+                session.setAttribute(Const.CURRENT_USER_ADMIN,Const.CURRENT_USER_ADMIN);
+
                 return Result.success();
             }else if(pw == ""){
                 return Result.fail(ResultCodeEnum.USERNOTEXIST);
@@ -49,4 +55,17 @@ public class LoginController {
             return Result.error();
         }
     }
+    //登录测试模块,可删
+    @RequestMapping("/check")
+    public Result check(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+
+        String admin = (String) session.getAttribute(Const.CURRENT_USER_ADMIN);
+        if(admin==null){
+            return Result.fail(ResultCodeEnum.NOTLOGIN);
+        }
+        System.out.println(admin);
+
+        return Result.success();
+    }
+
 }
