@@ -23,7 +23,7 @@ public class UpdateOrderSeatTask {
     //7.删除order_seat中对应6得到的座位信息的座位
 
     //每天22点运行
-    @Scheduled(cron="0 0 22 * * ？")
+    @Scheduled(cron="0 0 22 * * ?")
     public void process(){
 
     }

@@ -22,7 +22,7 @@ public class OrderRuleToRedisTask {
     //3.将自习室编号添加到对应的key的集合中去
 
     //每天22点运行
-    @Scheduled(cron="0 0 22 * * ？")
+    @Scheduled(cron="0 0 22 * * ?")
     public void process(){
 
     }

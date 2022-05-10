@@ -18,7 +18,7 @@ public class NotSignNoticeTask {
     //3.调用邮件服务发送邮件
 
     //每天0点10分、1点10分....到21点10分运行
-    @Scheduled(cron="0 10 0-21 * * ？")
+    @Scheduled(cron="0 10 0-21 * * ?")
     public void process(){
 
     }

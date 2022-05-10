@@ -17,7 +17,7 @@ public class SignNoticeTask {
     //3.调用邮件服务发送邮件
 
     //每天0点45分、1点45分....到20点45分及23点45分运行
-    @Scheduled(cron="0 45 0-20,23 * * ？")
+    @Scheduled(cron="0 45 0-20,23 * * ?")
     public void process(){
 
     }

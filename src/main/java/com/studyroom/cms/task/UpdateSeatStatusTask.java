@@ -20,7 +20,7 @@ public class UpdateSeatStatusTask {
     //6.order_seat中自习室编号_座位编号属于ListC的座位状态修改为可预约
 
     //每天0点、1点....21点和23点运行
-    @Scheduled(cron="0 1 0-21,23 * * ？")
+    @Scheduled(cron="0 1 0-21,23 * * ?")
     public void process(){
 
     }
