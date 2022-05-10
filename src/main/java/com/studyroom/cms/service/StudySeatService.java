@@ -42,7 +42,6 @@ public class StudySeatService {
         String  sql = "delete from `study_seat` where `room_number`='" + roomNumber + "'";
         try{
             effectRow = jdbcTemplate.update(sql);
-            System.out.println(effectRow);
         }catch (Exception e){
             e.printStackTrace();
             throw new Exception("mysql execute error");
