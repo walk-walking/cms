@@ -45,7 +45,7 @@ public class StudyRoomController {
                 int seatCount = Integer.valueOf(needParams.get("seat_count"));
                 if(seatCount > 0){
                     //若添加失败 不在接口中展示  后续可手动添加
-                    studySeatService.batchAdd(needParams.get("number"),seatCount);
+                    studySeatService.batchAdd(needParams.get("number"),needParams.get("building"),seatCount);
                 }
                 return Result.success(new HashMap<String,Object>(){{put("id",id);}});
             }

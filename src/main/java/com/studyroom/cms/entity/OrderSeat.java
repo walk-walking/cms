@@ -2,6 +2,8 @@ package com.studyroom.cms.entity;
 
 public class OrderSeat {
 
+    private int id;
+
     private String seatNumber;
 
     private String roomNumber;
@@ -16,6 +18,14 @@ public class OrderSeat {
     private String orderEndTime;
 
     private int orderMaxTime;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getSeatNumber() {
         return seatNumber;

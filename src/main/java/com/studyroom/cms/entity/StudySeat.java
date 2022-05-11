@@ -7,6 +7,7 @@ public class StudySeat {
     private String room_number;
     private int has_plug;
     private int is_valid;
+    private String building;
 
     public int getId() {
         return id;
@@ -46,5 +47,13 @@ public class StudySeat {
 
     public void setIs_valid(int is_valid) {
         this.is_valid = is_valid;
+    }
+
+    public String getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building;
     }
 }

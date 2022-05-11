@@ -1,8 +1,17 @@
 package com.studyroom.cms.task;
 
+import com.studyroom.cms.result.customException;
+import com.studyroom.cms.service.OrderRuleService;
+import com.studyroom.cms.service.OrderSeatService;
+import com.studyroom.cms.service.StudySeatService;
+import com.studyroom.cms.utils.LoggerUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.List;
 
 @Component
 @EnableScheduling
@@ -10,22 +19,63 @@ import org.springframework.stereotype.Component;
 //用于更新每天可预约座位信息的定时任务
 public class UpdateOrderSeatTask {
 
-    //处理流程
-    //可预约座位信息表 order_seat
-    //预约规则表 order_rule
-    //座位信息表 study_seat
-    //1.将order_seat中所有可预约、已预约的座位状态都设置为待预约状态 [重置]
-    //2.从order_rule中拿到被设置预约规则的自习室编号List(eg:JA101,JA103)
-    //3.删除order_seat中未设置预约规则的座位(eg:删除JA102下的所有座位)
-    //4.从order_rule中筛选出mtime为24小时内的规则
-    //5.将4筛选出的规则内容更新到order_seat
-    //6.从study_seat中筛选出mtime为24小时内且不可用的座位信息
-    //7.删除order_seat中对应6得到的座位信息的座位
+    @Autowired
+    private LoggerUtils loggerUtils;
+
+    @Autowired
+    private OrderSeatService orderSeatService;
+
+    @Autowired
+    private OrderRuleService orderRuleService;
+
+    @Autowired
+    private StudySeatService studySeatService;
+
+    //涉及的表
+    // - 可预约座位信息表 order_seat
+    // - 预约规则表 order_rule
+    // - 座位信息表 study_seat
 
     //每天22点运行
-    @Scheduled(cron="0 0 22 * * ?")
+//    @Scheduled(cron="0 0 22 * * ?")   //TODO 删除注释
     public void process(){
+        try{
+            //1.将order_seat中所有可预约、已预约的座位状态都设置为待预约状态 [重置]
+            orderSeatService.resetStatus();
 
+            //2.从order_rule中拿到被设置预约规则的自习室编号List(eg:JA101,JA103)
+            List<String> ruledRooms = orderRuleService.getRuledRooms();
+//            System.out.println("ruledRooms: " + ruledRooms);
+            if (ruledRooms.isEmpty()){
+                loggerUtils.info("不存在设置预约规则的自习室");
+                return;
+            }
+
+            //3.删除order_seat中未设置预约规则的座位(eg:删除JA102下的所有座位)
+            orderSeatService.deleteUnruledSeat(ruledRooms);
+
+            //4.从order_rule中筛选出mtime为24小时内的自习室编号List
+            List<String> latestRulesRooms = orderRuleService.getLatestRuledRooms();
+//            System.out.println("latestRulesRooms: " + latestRulesRooms);
+            if (!latestRulesRooms.isEmpty()){
+                //5.将4筛选出的规则内容更新到order_seat
+                orderSeatService.updateSeatOrderRule(latestRulesRooms);
+            }
+
+            //6.从study_seat中筛选出mtime为24小时内的座位信息
+            List<HashMap<String,String>> latestModSeats = studySeatService.getLatestModSeat();
+//            System.out.println("latestModSeats: " + latestModSeats);
+            if (!latestModSeats.isEmpty()){
+                //7.将study_seat中的修改应用到order_seat
+                orderSeatService.delOrAddSeat(latestModSeats);
+            }
+
+        }catch (customException e){
+            //若执行失败  再执行一遍
+            loggerUtils.error(e.getErrMsg());
+        }catch (Exception e){
+            loggerUtils.error(e.getMessage());
+        }
     }
 }
 
