@@ -5,7 +5,9 @@ public class Student {
     private int id;
     private String number;
     private String name;
+    private String sex;
     private String campus;
+    private String email;
     private int finish_year;
     private String password;
 
@@ -55,5 +57,21 @@ public class Student {
 
     public void setFinish_year(int finish_year) {
         this.finish_year = finish_year;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

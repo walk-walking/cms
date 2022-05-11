@@ -45,7 +45,7 @@ public class StudentService {
 
     public int addOne(HashMap<String,String> data) throws Exception{
         int retId = 0;
-        String sql = "insert into `student` (`number`,`name`,`campus`,`finish_year`,`password`) values (?,?,?,?,?)";
+        String sql = "insert into `student` (`number`,`name`,`sex`,`campus`,`email`,`finish_year`,`password`) values (?,?,?,?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
             jdbcTemplate.update(new PreparedStatementCreator() {
@@ -55,9 +55,11 @@ public class StudentService {
                     PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sql, new String[]{"id"});
                     preparedStatement.setString(1, data.get("number"));
                     preparedStatement.setString(2, data.get("name"));
-                    preparedStatement.setString(3, data.get("campus"));
-                    preparedStatement.setInt(4,Integer.parseInt(data.get("finish_year")));
-                    preparedStatement.setString(5,data.get("password"));
+                    preparedStatement.setString(3, data.get("sex"));
+                    preparedStatement.setString(4, data.get("campus"));
+                    preparedStatement.setString(5, data.get("email"));
+                    preparedStatement.setInt(6,Integer.parseInt(data.get("finish_year")));
+                    preparedStatement.setString(7,data.get("password"));
                     return preparedStatement;
                 }
             }, keyHolder);
@@ -75,7 +77,7 @@ public class StudentService {
 
     public Student getOneByNumber(String number) throws Exception{
         Student stu = null;
-        String sql = "select `id`,`number`,`name`,`campus`,`finish_year`,`password` from `student` where `number`='" + number + "' and `is_valid`=1";
+        String sql = "select `id`,`number`,`name`,`sex`,`campus`,`email`,`finish_year`,`password` from `student` where `number`='" + number + "' and `is_valid`=1";
         try{
             stu = jdbcTemplate.queryForObject(sql, new RowMapper<Student>() {
                 @Override
@@ -84,7 +86,9 @@ public class StudentService {
                     row.setId(rs.getInt("id"));
                     row.setNumber(rs.getString("number"));
                     row.setName(rs.getString("name"));
+                    row.setSex(rs.getString("sex"));
                     row.setCampus(rs.getString("campus"));
+                    row.setEmail(rs.getString("email"));
                     row.setFinish_year(rs.getInt("finish_year"));
                     row.setPassword(rs.getString("password"));
                     return row;
@@ -106,7 +110,7 @@ public class StudentService {
         try{
             Student stu = getOneByNumber(data.get("number"));
             if (stu != null){
-                String sql = "update `student` set `name` =?,`campus`=?,`finish_year`=?,`password`=? where `number`=?";
+                String sql = "update `student` set `name` =?,`sex`=?,`campus`=?,`email`=?,`finish_year`=?,`password`=? where `number`=?";
                 //如果更新前后数据一致  底层不会有更新操作  但effectRow仍然是1
                 effectRow = jdbcTemplate.update(new PreparedStatementCreator() {
                     @Override
@@ -114,10 +118,12 @@ public class StudentService {
                         //指定主键
                         PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sql);
                         preparedStatement.setString(1, data.get("name"));
-                        preparedStatement.setString(2, data.get("campus"));
-                        preparedStatement.setInt(3,Integer.parseInt(data.get("finish_year")));
-                        preparedStatement.setString(4,data.get("password"));
-                        preparedStatement.setString(5, data.get("number"));
+                        preparedStatement.setString(2, data.get("sex"));
+                        preparedStatement.setString(3, data.get("campus"));
+                        preparedStatement.setString(4, data.get("email"));
+                        preparedStatement.setInt(5,Integer.parseInt(data.get("finish_year")));
+                        preparedStatement.setString(6,data.get("password"));
+                        preparedStatement.setString(7, data.get("number"));
                         return preparedStatement;
                     }
                 });
@@ -152,7 +158,7 @@ public class StudentService {
         HashMap<String,Object> res = new HashMap<>();
         int offset = (page - 1) * pageSize;
         int rowcnt = pageSize;
-        String sql = "select `number`,`name`,`campus`,`finish_year` from `student` where `is_valid`=1 order by `id` desc limit " + offset + "," + rowcnt;
+        String sql = "select `number`,`name`,`sex`,`campus`,`email`,`finish_year` from `student` where `is_valid`=1 order by `id` desc limit " + offset + "," + rowcnt;
         try{
             List<Map<String,Object>> rs = jdbcTemplate.queryForList(sql);
             int count = getCount();
@@ -162,7 +168,9 @@ public class StudentService {
                 HashMap<String,Object> row = new HashMap<>();
                 row.put("number",rs.get(i).get("number"));
                 row.put("name",rs.get(i).get("name"));
+                row.put("sex",rs.get(i).get("sex"));
                 row.put("campus",rs.get(i).get("campus"));
+                row.put("email",rs.get(i).get("email"));
                 row.put("finish_year",rs.get(i).get("finish_year"));
                 data.add(row);
             }

@@ -25,8 +25,10 @@ public class StudentController {
             HashMap<String,String> needParams = new HashMap<>();
             needParams.put("type",request.getParameter("type"));
             needParams.put("number",request.getParameter("number"));
+            needParams.put("sex",request.getParameter("sex"));
             needParams.put("name",request.getParameter("name"));
             needParams.put("campus",request.getParameter("campus"));
+            needParams.put("email",request.getParameter("email"));
             needParams.put("finish_year",request.getParameter("finish_year"));
             needParams.put("password",request.getParameter("password"));
 
