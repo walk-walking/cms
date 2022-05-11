@@ -24,12 +24,12 @@ public class ReserveController {
 
 
     @RequestMapping("/check")
-    public Result check(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+    public Result check(HttpServletRequest request, HttpServletResponse response){
         return Result.success();
     }
 
     @RequestMapping("/order")
-    public Result order(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+    public Result order(HttpServletRequest request, HttpServletResponse response){
         try {
             //根据座位编号,自习室开始时间,自习室结束时间进行预约
 
@@ -48,12 +48,6 @@ public class ReserveController {
 
             Date st = sdf.parse(startTime);
             Date et = sdf.parse(endTime);
-
-            String student = (String) session.getAttribute(Const.CURRENT_USER_STUDENT);
-
-//            if (student == null) {
-//                return Result.fail(ResultCodeEnum.NOTLOGIN);
-//            }
 
             return reserveService.OrderLogic(studentNumber,roomNumber,seatNumber,st,et);
 
