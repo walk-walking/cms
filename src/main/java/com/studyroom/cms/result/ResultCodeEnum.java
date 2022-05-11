@@ -11,7 +11,8 @@ public enum ResultCodeEnum {
     USERHASEXIST(10004,"用户已存在"),
     ENTITYHASEXIST(10005,"实体已存在"),
     ENTITYNOTEXIST(10005,"实体不存在"),
-    NOTLOGIN(20001,"没有登录");
+    NOTLOGIN(20001,"没有登录"),
+    LOGOUTFAIL(20002,"登出失败");
 
 
     private Integer code;
