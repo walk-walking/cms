@@ -1,5 +1,8 @@
 package com.studyroom.cms.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Student {
 
     private int id;
@@ -10,6 +13,12 @@ public class Student {
     private String email;
     private int finish_year;
     private String password;
+
+    public static List<String> getIntColumn(){
+        List<String> ret = new ArrayList<>();
+        ret.add("finish_year");
+        return ret;
+    }
 
     public int getId() {
         return id;

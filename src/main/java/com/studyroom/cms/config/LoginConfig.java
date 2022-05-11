@@ -12,23 +12,19 @@ public class LoginConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //未添加进去的接口则不拦截
+        //2个拦截器 按照顺序依次拦截
         registry.addInterceptor(new AdminLoginInterceptor())
                 .addPathPatterns("/student/**")
+                .excludePathPatterns("/student/modpwd")
+                .excludePathPatterns("/student/modemail")
+
                 .addPathPatterns("/studyroom/**")
-                .addPathPatterns("/studyseat/**")
-
-                .excludePathPatterns("/api/login")
-
-                .excludePathPatterns("/reserve/**");
+                .addPathPatterns("/studyseat/**");
 
         registry.addInterceptor(new StudentLoginInterceptor())
                 .addPathPatterns("/reserve/**")
-
-                .excludePathPatterns("/api/login")
-
-                .excludePathPatterns("/student/**")
-                .excludePathPatterns("/studyroom/**")
-                .excludePathPatterns("/studyseat/**");
+                .addPathPatterns("/student/modpwd")
+                .addPathPatterns("/student/modemail");
 
     }
 

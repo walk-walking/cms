@@ -196,4 +196,29 @@ public class StudentService {
 
         return count;
     }
+
+    public int modOneColumn(String columnName, Object columnValue ,String number) throws Exception{
+        int effecId = 0;
+        try{
+            Student stu = getOneByNumber(number);
+            if (stu != null){
+                List<String> intColumnList = Student.getIntColumn();
+                String sql = "";
+                if (intColumnList.contains(columnName)){
+                    sql = "update `student` set `" + columnName + "` = "+ columnValue +" where `number`='" + number + "'";
+                }else {
+                    sql = "update `student` set `" + columnName + "` = '"+ columnValue +"' where `number`='" + number + "'";
+                }
+
+                if (jdbcTemplate.update(sql) > 0){
+                    effecId = stu.getId();
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new Exception("mysql execute error");
+        }
+
+        return effecId;
+    }
 }
