@@ -107,7 +107,7 @@ public class StudentService {
             Student stu = getOneByNumber(data.get("number"));
             if (stu != null){
                 String sql = "update `student` set `name` =?,`campus`=?,`finish_year`=?,`password`=? where `number`=?";
-                //如果更新前后数据一致  底层不会有更新操作
+                //如果更新前后数据一致  底层不会有更新操作  但effectRow仍然是1
                 effectRow = jdbcTemplate.update(new PreparedStatementCreator() {
                     @Override
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
