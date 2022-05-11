@@ -1,7 +1,6 @@
 package com.studyroom.cms.service;
 
 import com.studyroom.cms.entity.OrderRule;
-import com.studyroom.cms.entity.Student;
 import com.studyroom.cms.result.ExceptionCodeEnum;
 import com.studyroom.cms.result.customException;
 import com.studyroom.cms.utils.LoggerUtils;
@@ -88,6 +87,29 @@ public class OrderRuleService {
         }
 
         return orderRule;
+    }
+
+    public List<String> getRoomsByTime(String time, String type) throws customException{
+        List<String> ret = new ArrayList<>();
+        StringBuffer sql = new StringBuffer();
+        if(type == OrderRule.ORDER_TIME_TYPE_OPEN){
+            sql.append("select `room_number` from `order_rule` where `open_time` = '");
+        }else{
+            sql.append("select `room_number` from `order_rule` where `close_time` = '");
+        }
+        sql.append(time);
+        sql.append("'");
+
+        try{
+            List<Map<String,Object>> rs = jdbcTemplate.queryForList(sql.toString());
+            for (int i = 0; i < rs.size(); ++i){
+                ret.add(rs.get(i).get("room_number").toString());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.GET_ROOM_BY_TIME_FAIL);
+        }
+        return ret;
     }
 
 }

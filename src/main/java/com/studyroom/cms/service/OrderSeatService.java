@@ -42,6 +42,9 @@ public class OrderSeatService {
     }
 
     public void deleteUnruledSeat(List<String> ruledRooms) throws customException{
+        if (ruledRooms.isEmpty()){
+            return;
+        }
         try{
             StringBuffer sql = new StringBuffer();
             sql.append("delete from `order_seat` where `room_number` not in ");
@@ -65,6 +68,9 @@ public class OrderSeatService {
     }
 
     public void updateSeatOrderRule(List<String> latestRuledRooms) throws customException{
+        if(latestRuledRooms.isEmpty()){
+            return;
+        }
         try{
             String sql = "update `order_seat` set `order_start_time`=?,order_end_time=?,order_max_time=? where `room_number`=?";
             for(int i = 0; i < latestRuledRooms.size(); ++i){
@@ -92,6 +98,10 @@ public class OrderSeatService {
     }
 
     public void delOrAddSeat(List<HashMap<String,String>> latestModSeats) throws customException{
+        if(latestModSeats.isEmpty()){
+            return;
+        }
+
         String insertSql = "insert into `order_seat` " +
                 "(`room_number`,`seat_number`,`building`,`order_start_time`,`order_end_time`,`order_max_time`) " +
                 "values(?,?,?,?,?,?)";
@@ -169,4 +179,31 @@ public class OrderSeatService {
 
         return orderSeat;
     }
+
+    public void modSeatStatusByRoom(List<String> roomList,int newStatus) throws customException{
+        if(roomList.isEmpty()){
+            return;
+        }
+        try{
+            StringBuffer sql = new StringBuffer();
+            sql.append("update `order_seat` set `order_status` = ");
+            sql.append(newStatus);
+            sql.append(" where `room_number` in ");
+            sql.append("(");
+            for (int i = 0; i < roomList.size(); ++i){
+                sql.append("'");
+                sql.append(roomList.get(i));
+                sql.append("'");
+                sql.append(",");
+            }
+            sql.deleteCharAt(sql.length()-1);
+            sql.append(")");
+            int effectRow = jdbcTemplate.update(sql.toString());
+            loggerUtils.info("状态修改为"+ newStatus + "的座位数量: " + effectRow);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.MOD_SEAT_STATUS_BY_ROOM_FAIL);
+        }
+    }
+
 }
