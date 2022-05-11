@@ -37,15 +37,15 @@ public class LoginController {
                 }
             }
 
-            String pw = Integer.parseInt(needParams.get("type")) == 1 ? adminService.getPassword(needParams.get("username")) : studentService.getPassword(needParams.get("username"));
+            int type = Integer.parseInt(needParams.get("type"));
+            String pw = (type == 1) ? adminService.getPassword(needParams.get("username")) : studentService.getPassword(needParams.get("username"));
             if (needParams.get("password").equals(pw)){
 
                 //set session Attribute
-                if(Integer.parseInt(needParams.get("type")) == 1) {
-                    session.setAttribute(Const.CURRENT_USER_ADMIN, Const.CURRENT_USER_ADMIN);
-                }
-                else{
-                    session.setAttribute(Const.CURRENT_USER_STUDENT, Const.CURRENT_USER_STUDENT);
+                if (type == 1){
+                    session.setAttribute(Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN,Const.CURRENT_ADMIN_NUMBER_PREFIX + needParams.get("username"));
+                }else{
+                    session.setAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN,Const.CURRENT_STUDENT_NUMBER_PREFIX + needParams.get("username"));
                 }
 
                 return Result.success();
@@ -59,19 +59,24 @@ public class LoginController {
             //数据库执行异常
             return Result.error();
         }
-
     }
-    //登录测试模块,可删
-    @RequestMapping("/check")
-    public Result check(HttpServletRequest request, HttpServletResponse response, HttpSession session){
 
-        String admin = (String) session.getAttribute(Const.CURRENT_USER_ADMIN);
-        if(admin==null){
-            return Result.fail(ResultCodeEnum.NOTLOGIN);
+    @RequestMapping("/logout")
+    public Result Logout(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+        String typeStr = request.getParameter("type");
+        if (typeStr == null || typeStr == ""){
+            return Result.fail(ResultCodeEnum.MISSPARAM);
         }
-        System.out.println(admin);
 
-        return Result.success();
+        int type = Integer.parseInt(typeStr);
+        String column = (type == 1) ? Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN : Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN;
+        session.removeAttribute(column);
+        Object numberValue =  session.getAttribute(column);
+        if (numberValue == null){
+            return Result.success();
+        }else{
+            return Result.fail(ResultCodeEnum.LOGOUTFAIL);
+        }
     }
 
 }
