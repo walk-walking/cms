@@ -41,7 +41,12 @@ public class LoginController {
             if (needParams.get("password").equals(pw)){
 
                 //set session Attribute
-                session.setAttribute(Const.CURRENT_USER_ADMIN,Const.CURRENT_USER_ADMIN);
+                if(Integer.parseInt(needParams.get("type")) == 1) {
+                    session.setAttribute(Const.CURRENT_USER_ADMIN, Const.CURRENT_USER_ADMIN);
+                }
+                else{
+                    session.setAttribute(Const.CURRENT_USER_STUDENT, Const.CURRENT_USER_STUDENT);
+                }
 
                 return Result.success();
             }else if(pw == ""){
@@ -54,6 +59,7 @@ public class LoginController {
             //数据库执行异常
             return Result.error();
         }
+
     }
     //登录测试模块,可删
     @RequestMapping("/check")
