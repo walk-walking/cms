@@ -101,5 +101,30 @@ public class ReserveController {
             return Result.error();
         }
     }
+    @RequestMapping("/queryReserveList")
+    public Result queryReserveList(HttpServletRequest request, HttpServletResponse response,HttpSession session){
+        try{
+            Object numberValue = session.getAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN);
+            String studentSessionNo = numberValue.toString().split(":")[1];
+            String studentNumber = request.getParameter("studentNumber");
+            return reserveService.queryReserverListLogic(studentNumber,studentSessionNo);
+
+        }catch (Exception e){
+            return Result.error();
+        }
+    }
+
+    @RequestMapping("/queryUnReserveList")
+    public Result queryUnReserveList(HttpServletRequest request, HttpServletResponse response){
+        try {
+            String studyRoomNumber = request.getParameter("studyRoomNumber");
+            return reserveService.queryUnReserverListLogic(studyRoomNumber);
+
+        }catch (Exception e){
+            return Result.error();
+        }
+    }
+
+
 
 }

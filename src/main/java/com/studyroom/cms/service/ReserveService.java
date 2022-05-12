@@ -3,8 +3,10 @@ package com.studyroom.cms.service;
 import com.studyroom.cms.entity.OrderSeat;
 import com.studyroom.cms.entity.StudentOrderMessage;
 import com.studyroom.cms.entity.StudySeat;
+import com.studyroom.cms.result.ExceptionCodeEnum;
 import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.ResultCodeEnum;
+import com.studyroom.cms.result.customException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,9 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 @Service
 public class ReserveService {
@@ -32,6 +32,9 @@ public class ReserveService {
 
     @Autowired
     StudySeatService studySeatService;
+
+    @Autowired
+    StudentOrderMessageService studentOrderMessageService;
 
 
     /**
@@ -225,6 +228,44 @@ public class ReserveService {
         return Result.success();
     }
 
+    /**
+     * 根据对应的studentNumber返回预约成功的预约记录
+     * @param studentNumber
+     * @param studentSessionNo
+     * @return
+     */
+    public Result queryReserverListLogic(String studentNumber,String studentSessionNo){
+        //权限检查
+        if(!studentIDAuthority(studentNumber,studentSessionNo)){
+            return Result.fail(ResultCodeEnum.STUDENT_ID_NOT_MATCHING);
+        }
+        //使用StudentOrderMessageService的方法
+        List<StudentOrderMessage> ret = new ArrayList<>();
+        try{
+            StringBuffer condition = new StringBuffer();
+            condition.append("`is_order_valid`=1 and ");
+            condition.append("`student_number`=");
+            condition.append(studentNumber);
+
+            ret = studentOrderMessageService.getOrderMessageByCondition(condition.toString());
+            System.out.println(ret);
+
+            //return
+            return Result.listSuccess(ret.size(),ret);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(ResultCodeEnum.REVERSE_MESSAGE_QUERY_FAIL);
+        }
+
+    }
+
+    public Result queryUnReserverListLogic(String studyRoomNumber){
+
+
+        return Result.success();
+    }
+
 
     /**
      * 学生NumberCheck——复用代码
@@ -295,8 +336,8 @@ public class ReserveService {
         String nowTimeStr = sdf.format(calendar.getTime());
         Date nowTime = sdf.parse(nowTimeStr);
         return nowTime;
-
     }
+
 
 
 

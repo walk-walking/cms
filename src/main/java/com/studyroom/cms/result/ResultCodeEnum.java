@@ -26,7 +26,8 @@ public enum ResultCodeEnum {
     IS_SIGNINED(15007,"您已经签过到"),
     ORDER_NUMBER_NOT_EXIST(15008,"没有对应的订单"),
     CANCEL_TIME_OUT(15009,"已经过了可以取消订单的时间"),
-    IS_CANCEL(15009,"已经取消过预约");
+    IS_CANCEL(15009,"已经取消过预约"),
+    REVERSE_MESSAGE_QUERY_FAIL(15010,"查询对应学生NUMBER的有效预约信息失败");
 
 
     private Integer code;
