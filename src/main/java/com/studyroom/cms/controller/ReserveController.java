@@ -4,11 +4,13 @@ import com.studyroom.cms.result.Const;
 import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.ResultCodeEnum;
 import com.studyroom.cms.service.ReserveService;
+import com.studyroom.cms.utils.EmailSend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,7 +28,9 @@ public class ReserveController {
 
 
     @RequestMapping("/check")
-    public Result check(HttpServletRequest request, HttpServletResponse response){
+    public Result check(HttpServletRequest request, HttpServletResponse response) throws MessagingException {
+        EmailSend emailSend = new EmailSend();
+        emailSend.EmailSendLogic_single("742906522@qq.com","自习室签到提醒","距离JA201的自习室签到还有15分钟");
         return Result.success();
     }
 

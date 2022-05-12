@@ -149,6 +149,13 @@ public class ReserveService {
         return Result.success();
     }
 
+    /**
+     * 取消订单逻辑
+     * @param orderNo
+     * @param studentSessionNo
+     * @return
+     * @throws Exception
+     */
     public Result cancelLogic(String orderNo,String studentSessionNo) throws Exception{
 
         //判断订单是否存在
