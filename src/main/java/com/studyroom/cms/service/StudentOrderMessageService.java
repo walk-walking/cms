@@ -1,5 +1,6 @@
 package com.studyroom.cms.service;
 
+import com.studyroom.cms.entity.StudentOrderMessage;
 import com.studyroom.cms.result.ExceptionCodeEnum;
 import com.studyroom.cms.result.customException;
 import com.studyroom.cms.utils.LoggerUtils;
@@ -7,10 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class StudentOrderMessageService {
@@ -48,4 +47,79 @@ public class StudentOrderMessageService {
 
         return ret;
     }
+
+    //获取即将开始但未签到的预约订单信息
+    public List<StudentOrderMessage> getNotSignInAndNotStartOrderMessage(String OrderStartTime) throws customException {
+        List<StudentOrderMessage>  ret = new ArrayList<>();
+        try{
+            StringBuffer condition = new StringBuffer();
+            condition.append("`is_sign_in`=0 and ");
+            condition.append("`is_order_valid`=1 and ");
+            condition.append("`order_start_time`='");
+            condition.append(OrderStartTime);
+            condition.append("'");
+
+            ret = getOrderMessageByCondition(condition.toString());
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.GET_NOT_SIGN_IN_AND_NOT_START_ORDER_MESSAGE_FAIL);
+        }
+
+        return ret;
+    }
+
+    //获取已经开始但未签到的预约订单信息
+    public List<StudentOrderMessage> getNotSignInAndHasStartOrderMessage(String OrderStartTime) throws customException {
+        List<StudentOrderMessage>  ret = new ArrayList<>();
+        try{
+            StringBuffer condition = new StringBuffer();
+            condition.append("`is_sign_in`=0 and ");
+            condition.append("`is_order_valid`=1 and ");
+            condition.append("`order_start_time`='");
+            condition.append(OrderStartTime);
+            condition.append("'");
+
+            ret = getOrderMessageByCondition(condition.toString());
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.GET_NOT_SIGN_IN_AND_HAS_START_ORDER_MESSAGE_FAIL);
+        }
+
+        return ret;
+    }
+
+    //根据筛选条件返回预约订单对象
+    public List<StudentOrderMessage> getOrderMessageByCondition(String condition){
+        List<StudentOrderMessage>  ret = new ArrayList<>();
+        try{
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            StringBuffer sql = new StringBuffer();
+            sql.append("select ");
+            sql.append("`id`,`seat_number`,`room_number`,`student_number`,`order_start_time`,`order_end_time`,`is_sign_in`,`is_order_valid` ");
+            sql.append("from `student_order_message` ");
+            sql.append("where ");
+            sql.append(condition);
+
+            List<Map<String,Object>> sqlRet = jdbcTemplate.queryForList(sql.toString());
+            for (int i = 0; i < sqlRet.size(); ++i){
+                StudentOrderMessage one = new StudentOrderMessage();
+                one.setId(Integer.parseInt(sqlRet.get(i).get("id").toString()));
+                one.setSeatNumber(sqlRet.get(i).get("seat_number").toString());
+                one.setRoomNumber(sqlRet.get(i).get("room_number").toString());
+                one.setStudentNumber(sqlRet.get(i).get("student_number").toString());
+                one.setOrderStartTime(sdf.parse(sqlRet.get(i).get("order_start_time").toString()));
+                one.setOrderEndTime(sdf.parse(sqlRet.get(i).get("order_end_time").toString()));
+                one.setIsSignIn(Integer.parseInt(sqlRet.get(i).get("is_sign_in").toString()));
+                one.setIsOrderValid(Integer.parseInt(sqlRet.get(i).get("is_order_valid").toString()));
+                ret.add(one);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.GET_ORDER_MESSAGE_BY_CONDITION_FAIL);
+        }
+
+        return ret;
+    }
+
 }
