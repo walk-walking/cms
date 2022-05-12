@@ -33,13 +33,13 @@ public class StudyRoomController {
 
             for (Object value : needParams.values()){
                 if (value == null || value == ""){
-                    return Result.fail(ResultCodeEnum.MISSPARAM);
+                    return Result.fail(ResultCodeEnum.MISS_PARAM);
                 }
             }
 
             int id = studyRoomService.addOne(needParams);
             if (id == 0){
-                return Result.fail(ResultCodeEnum.ENTITYHASEXIST);
+                return Result.fail(ResultCodeEnum.ENTITY_HAS_EXIST);
             }else{
                 //添加对应的座位
                 int seatCount = Integer.valueOf(needParams.get("seat_count"));
@@ -88,12 +88,12 @@ public class StudyRoomController {
         try{
             String number = request.getParameter("number");
             if (number == null || number == ""){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
             int effectId = studyRoomService.delOne(number);
             if (effectId == 0) {
-                return Result.fail(ResultCodeEnum.ENTITYNOTEXIST);
+                return Result.fail(ResultCodeEnum.ENTITY_NOT_EXIST);
             }else{
                 studySeatService.deleteByRoomNumber(number);
                 return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});

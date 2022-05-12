@@ -3,6 +3,7 @@ package com.studyroom.cms.entity;
 import java.util.Date;
 
 public class StudentOrderMessage {
+    private int id;
 
     private String seatNumber;
 
@@ -17,6 +18,14 @@ public class StudentOrderMessage {
     private int isSignIn;
 
     private int isOrderValid;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getSeatNumber() {
         return seatNumber;

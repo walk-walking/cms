@@ -17,6 +17,7 @@ public class LoginConfig implements WebMvcConfigurer {
                 .addPathPatterns("/student/**")
                 .excludePathPatterns("/student/modpwd")
                 .excludePathPatterns("/student/modemail")
+                .excludePathPatterns("/student/info")
 
                 .addPathPatterns("/studyroom/**")
                 .addPathPatterns("/studyseat/**");
@@ -24,7 +25,8 @@ public class LoginConfig implements WebMvcConfigurer {
         registry.addInterceptor(new StudentLoginInterceptor())
                 .addPathPatterns("/reserve/**")
                 .addPathPatterns("/student/modpwd")
-                .addPathPatterns("/student/modemail");
+                .addPathPatterns("/student/modemail")
+                .addPathPatterns("/student/info");
 
     }
 

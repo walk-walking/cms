@@ -40,12 +40,14 @@ public class UpdateOrderSeatTask {
 //    @Scheduled(cron="0 0 22 * * ?")   //TODO 删除注释
     public void process(){
         try{
+            loggerUtils.info("更新每天可预约座位信息的定时任务开始执行");
+
             //1.将order_seat中所有可预约、已预约的座位状态都设置为待预约状态 [重置]
             orderSeatService.resetStatus();
 
             //2.从order_rule中拿到被设置预约规则的自习室编号List(eg:JA101,JA103)
             List<String> ruledRooms = orderRuleService.getRuledRooms();
-//            System.out.println("ruledRooms: " + ruledRooms);
+            loggerUtils.info("已设置预约规则的自习室："+ ruledRooms.toString());
             if (ruledRooms.isEmpty()){
                 loggerUtils.info("不存在设置预约规则的自习室");
                 return;
@@ -56,7 +58,7 @@ public class UpdateOrderSeatTask {
 
             //4.从order_rule中筛选出mtime为24小时内的自习室编号List
             List<String> latestRulesRooms = orderRuleService.getLatestRuledRooms();
-//            System.out.println("latestRulesRooms: " + latestRulesRooms);
+            loggerUtils.info("24小时内预约规则被修改的自习室：" + latestRulesRooms.toString());
             if (!latestRulesRooms.isEmpty()){
                 //5.将4筛选出的规则内容更新到order_seat
                 orderSeatService.updateSeatOrderRule(latestRulesRooms);
@@ -64,7 +66,7 @@ public class UpdateOrderSeatTask {
 
             //6.从study_seat中筛选出mtime为24小时内的座位信息
             List<HashMap<String,String>> latestModSeats = studySeatService.getLatestModSeat();
-//            System.out.println("latestModSeats: " + latestModSeats);
+            loggerUtils.info("24小时内被修改的座位："+ latestModSeats.toString());
             if (!latestModSeats.isEmpty()){
                 //7.将study_seat中的修改应用到order_seat
                 orderSeatService.delOrAddSeat(latestModSeats);
