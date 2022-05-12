@@ -1,4 +1,4 @@
-package com.studyroom.cms.utils;
+package com.studyroom.cms.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;

@@ -1,6 +1,7 @@
 package com.studyroom.cms.service;
 
 import com.studyroom.cms.entity.StudySeat;
+import com.studyroom.cms.result.ExceptionCodeEnum;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class StudySeatServiceTest {
     public void batchAdd() {
         String rooNumber = "JA999";
         int seatCount = 2;
-        boolean ret = studySeatService.batchAdd(rooNumber,seatCount);
+        boolean ret = studySeatService.batchAdd(rooNumber,"A教学楼",seatCount);
         Assert.assertNotNull(ret);
     }
 
@@ -89,6 +90,15 @@ public class StudySeatServiceTest {
             Assert.assertNotEquals(0,effectId);
         }catch (Exception e){
             Assert.assertEquals("mysql execute error",e.getMessage());
+        }
+    }
+
+    @Test
+    public void getLatestModSeat() {
+        try{
+            studySeatService.getLatestModSeat();
+        }catch (Exception e){
+            assertEquals(ExceptionCodeEnum.GET_LATEST_MOD_SEAT_FAIL.getErrMsg(),e.getMessage());
         }
     }
 }
