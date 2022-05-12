@@ -93,7 +93,7 @@ public class RedisUtils {
      */
     public boolean set(String key, Object value) {
         try {
-            System.out.println("key:" + key);
+//            System.out.println("key:" + key);
             redisTemplate.opsForValue().set(key, value);
             return true;
         } catch (Exception e) {

@@ -2,6 +2,12 @@ package com.studyroom.cms.entity;
 
 public class OrderSeat {
 
+    public static final int ORDER_STATUS_NOTOPEN = -1;  //  未开放
+    public static final int ORDER_STATUS_OPEN = 0;  //待预约
+    public static final int ORDER_STATUS_ORDERED = 1;  //已预约
+
+    private int id;
+
     private String seatNumber;
 
     private String roomNumber;
@@ -16,6 +22,14 @@ public class OrderSeat {
     private String orderEndTime;
 
     private int orderMaxTime;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getSeatNumber() {
         return seatNumber;

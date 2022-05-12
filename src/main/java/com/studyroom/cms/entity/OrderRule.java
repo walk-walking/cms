@@ -1,7 +1,9 @@
 package com.studyroom.cms.entity;
 
 public class OrderRule {
-        //not know (tinyint) is a int or a boolean
+
+    public static final String ORDER_TIME_TYPE_OPEN = "open";  //预约时间类型--开始时间
+    public static final String ORDER_TIME_TYPE_CLOSE = "close";  //预约时间类型--结束时间
 
     private String roomNumber;
 
