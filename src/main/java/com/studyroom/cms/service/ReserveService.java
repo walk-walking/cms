@@ -1,13 +1,19 @@
 package com.studyroom.cms.service;
 
+import com.studyroom.cms.entity.OrderSeat;
+import com.studyroom.cms.entity.StudentOrderMessage;
 import com.studyroom.cms.entity.StudySeat;
 import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -120,23 +126,18 @@ public class ReserveService {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date ST =sdf.parse(res.split("\\.")[0]);
-        //获取当前时间
-        Calendar calendar = Calendar.getInstance();
-        String nowTimeStr = sdf.format(calendar.getTime());
-        Date nowTime = sdf.parse(nowTimeStr);
 
         //检测是否过了签到时间: startTime + 15min
-        if(!timeDistance(nowTime,ST,900)){
+        if(!timeDistance(getNowTime(),ST,900)){
             return Result.fail(ResultCodeEnum.SIGNIN_TIME_OUT);
         }
         //提前15分钟签到
-        if(timeDistance(nowTime,ST,-900)){
+        if(timeDistance(getNowTime(),ST,-900)){
             return Result.fail(ResultCodeEnum.SIGNIN_TIME_TOO_EARLY);
         }
 
         //所有的逻辑检测完成,现在进行签到操作
         sql = "update student_order_message set is_sign_in='" + 1+ "' where student_number='"+ studentNumber + "' and `room_number`='" + roomNumber + "' and `seat_number`='"+ seatNumber+"'";
-        System.out.println(sql);
         try{
             jdbcTemplate.update(sql);
         } catch (Exception e){
@@ -145,6 +146,75 @@ public class ReserveService {
         }
 
         //success
+        return Result.success();
+    }
+
+    public Result cancelLogic(String orderNo,String studentSessionNo) throws Exception{
+
+        //判断订单是否存在
+        StudentOrderMessage studentOrderMessage = null;
+        int count = 0;
+        String sql = "select count(*) from `student_order_message` where `id`='" + orderNo +"' ";
+        count = jdbcTemplate.queryForObject(sql,Integer.class);
+        if(count==0){
+            return Result.fail(ResultCodeEnum.ORDER_NUMBER_NOT_EXIST);
+        }
+
+        //查询订单信息
+        sql = "select * from `student_order_message` where `id`='" + orderNo +"' ";
+        try{
+            studentOrderMessage = jdbcTemplate.queryForObject(sql, new RowMapper<StudentOrderMessage>() {
+                @Override
+                public StudentOrderMessage mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    StudentOrderMessage row = new StudentOrderMessage();
+
+                    String dateStr = rs.getString("order_start_time");
+                    Date ST = null;
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        ST =sdf.parse(dateStr.split("\\.")[0]);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    row.setIsOrderValid(rs.getInt("is_sign_in"));
+                    row.setIsOrderValid(rs.getInt("is_order_valid"));
+                    row.setOrderStartTime(ST);
+                    row.setStudentNumber(rs.getString("student_number"));
+                    return row;
+                }
+            });
+
+        } catch (Exception e){
+            //其他异常错误
+            e.printStackTrace();
+        }
+        //权限检查
+        if(!studentIDAuthority(studentOrderMessage.getStudentNumber(),studentSessionNo)){
+            return Result.fail(ResultCodeEnum.STUDENT_ID_NOT_MATCHING);
+        }
+        //判断是否签过到
+        if(studentOrderMessage.getIsSignIn()==1){
+            return Result.fail(ResultCodeEnum.IS_SIGNINED);
+        }
+        //判断取消签到是否晚于开始时间
+        if(!timeDistance(getNowTime(),studentOrderMessage.getOrderStartTime(),0)){
+            return Result.fail(ResultCodeEnum.CANCEL_TIME_OUT);
+        }
+        //判断是否已经取消预约
+        if(studentOrderMessage.getIsOrderValid()!=1){
+            return Result.fail(ResultCodeEnum.IS_CANCEL);
+        }
+
+        //所有逻辑检测完成,进行取消预约操作,将is_vaild 改为0
+        sql = "update student_order_message set is_order_valid='" + 0 +"' where id = '" + orderNo +"'";
+
+        try{
+            jdbcTemplate.update(sql);
+        } catch (Exception e){
+            //其他异常错误
+            e.printStackTrace();
+        }
         return Result.success();
     }
 
@@ -206,6 +276,20 @@ public class ReserveService {
 
     }
 
+    /**
+     *
+     * @return
+     * 返回当前时间
+     */
+    public Date getNowTime() throws ParseException {
+        //获取当前时间
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        String nowTimeStr = sdf.format(calendar.getTime());
+        Date nowTime = sdf.parse(nowTimeStr);
+        return nowTime;
+
+    }
 
 
 

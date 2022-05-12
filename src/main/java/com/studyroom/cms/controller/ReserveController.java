@@ -71,7 +71,6 @@ public class ReserveController {
             String studentNumber = request.getParameter("studentNumber");
             String roomNumber = request.getParameter("room_number");
             String seatNumber = request.getParameter("seat_number");
-            System.out.println(studentNumber);
 
 
 
@@ -82,6 +81,21 @@ public class ReserveController {
         }
     }
 
+    @RequestMapping("/cancel")
+    public Result cancel(HttpServletRequest request, HttpServletResponse response,HttpSession session){
+        try {
+            Object numberValue = session.getAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN);
+            String studentSessionNo = numberValue.toString().split(":")[1];
+            String orderNo = request.getParameter("orderNo");
+            if(orderNo==null){
+                return Result.fail(ResultCodeEnum.MISSPARAM);
+            }
 
+            return reserveService.cancelLogic(orderNo,studentSessionNo);
+
+        }catch (Exception e){
+            return Result.error();
+        }
+    }
 
 }

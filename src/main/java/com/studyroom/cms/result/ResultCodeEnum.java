@@ -20,7 +20,10 @@ public enum ResultCodeEnum {
     ORDER_MESSAGE_NOT_EXIST(15005,"没有对应的预约信息"),
     SIGNIN_TIME_OUT(15005,"已经过了签到时间"),
     SIGNIN_TIME_TOO_EARLY(15006,"签到时间过早"),
-    IS_SIGNINED(15007,"您已经签过到");
+    IS_SIGNINED(15007,"您已经签过到"),
+    ORDER_NUMBER_NOT_EXIST(15008,"没有对应的订单"),
+    CANCEL_TIME_OUT(15009,"已经过了可以取消订单的时间"),
+    IS_CANCEL(15009,"已经取消过预约");
 
 
     private Integer code;
