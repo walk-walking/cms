@@ -99,7 +99,7 @@ public class StudentController {
     public Result modPwd(HttpServletRequest request, HttpServletResponse respons){
         try{
             HashMap<String,String> needParams = new HashMap<>();
-            needParams.put("number",request.getParameter("username"));
+            needParams.put("number",request.getParameter("number"));
             needParams.put("password",request.getParameter("password"));
             needParams.put("origin_password",request.getParameter("origin_password"));
 
@@ -133,19 +133,46 @@ public class StudentController {
     @RequestMapping("/modemail")
     public Result modEmail(HttpServletRequest request, HttpServletResponse respons){
         try{
-            String username = request.getParameter("username");
+            String number = request.getParameter("number");
             String email = request.getParameter("email");
-            if (username == null || username == "" || email == null || email == ""){
+            if (number == null || number == "" || email == null || email == ""){
                 return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
-            int effectId = studentService.modOneColumn("email",email,username);
+            int effectId = studentService.modOneColumn("email",email,number);
             if (effectId == 0) {
                 return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
                 return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
             }
 
+        }catch (Exception e){
+            return Result.error();
+        }
+    }
+
+    @RequestMapping("/info")
+    public Result Info(HttpServletRequest request, HttpServletResponse respons){
+        try{
+            String number = request.getParameter("number");
+            if (number == null || number == ""){
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
+            }
+
+            Student stu = studentService.getOneByNumber(number);
+            if (stu == null){
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
+            }
+
+            HashMap<String,Object> row = new HashMap<>();
+            row.put("number",stu.getNumber());
+            row.put("name",stu.getName());
+            row.put("sex",stu.getSex());
+            row.put("campus",stu.getCampus());
+            row.put("email",stu.getEmail());
+            row.put("finish_year",stu.getFinish_year());
+
+            return Result.success(row);
         }catch (Exception e){
             return Result.error();
         }

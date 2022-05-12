@@ -28,7 +28,7 @@ public class LoginController {
         try{
             HashMap<String,String> needParams = new HashMap<>();
             needParams.put("type",request.getParameter("type"));
-            needParams.put("username",request.getParameter("username"));
+            needParams.put("number",request.getParameter("number"));
             needParams.put("password",request.getParameter("password"));
 
             for (Object value : needParams.values()){
@@ -38,14 +38,14 @@ public class LoginController {
             }
 
             int type = Integer.parseInt(needParams.get("type"));
-            String pw = (type == 1) ? adminService.getPassword(needParams.get("username")) : studentService.getPassword(needParams.get("username"));
+            String pw = (type == 1) ? adminService.getPassword(needParams.get("number")) : studentService.getPassword(needParams.get("number"));
             if (needParams.get("password").equals(pw)){
 
                 //set session Attribute
                 if (type == 1){
-                    session.setAttribute(Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN,Const.CURRENT_ADMIN_NUMBER_PREFIX + needParams.get("username"));
+                    session.setAttribute(Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN,Const.CURRENT_ADMIN_NUMBER_PREFIX + needParams.get("number"));
                 }else{
-                    session.setAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN,Const.CURRENT_STUDENT_NUMBER_PREFIX + needParams.get("username"));
+                    session.setAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN,Const.CURRENT_STUDENT_NUMBER_PREFIX + needParams.get("number"));
                 }
 
                 return Result.success();
