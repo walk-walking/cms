@@ -12,7 +12,7 @@ public enum ResultCodeEnum {
     ENTITY_HAS_EXIST(10005,"实体已存在"),
     ENTITY_NOT_EXIST(10005,"实体不存在"),
 
-    USER_NO_AUTHORITY(10006,""),
+    USER_ORIGIN_PASSWORD_IS_WRONG(10006,"用户提供的原有密码错误"),
 
     NOT_LOGIN(20001,"没有登录"),
     LOGOUT_FAIL(20002,"登出失败"),

@@ -1,5 +1,6 @@
 package com.studyroom.cms.controller;
 
+import com.studyroom.cms.entity.Student;
 import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.ResultCodeEnum;
 import com.studyroom.cms.service.StudentService;
@@ -97,13 +98,27 @@ public class StudentController {
     @RequestMapping("/modpwd")
     public Result modPwd(HttpServletRequest request, HttpServletResponse respons){
         try{
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            if (username == null || username == "" || password == null || password == ""){
-                return Result.fail(ResultCodeEnum.MISS_PARAM);
+            HashMap<String,String> needParams = new HashMap<>();
+            needParams.put("number",request.getParameter("username"));
+            needParams.put("password",request.getParameter("password"));
+            needParams.put("origin_password",request.getParameter("origin_password"));
+
+            for (String value : needParams.values()){
+                if (value == null || value == ""){
+                    return Result.fail(ResultCodeEnum.MISS_PARAM);
+                }
             }
 
-            int effectId = studentService.modOneColumn("password",password,username);
+            Student stu = studentService.getOneByNumber(needParams.get("number"));
+            if (stu == null){
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
+            }
+
+            if(!stu.getPassword().equals(needParams.get("origin_password"))){
+                return Result.fail(ResultCodeEnum.USER_ORIGIN_PASSWORD_IS_WRONG);
+            }
+
+            int effectId = studentService.modOneColumn("password",needParams.get("password"),needParams.get("number"));
             if (effectId == 0) {
                 return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
