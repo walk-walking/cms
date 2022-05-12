@@ -1,6 +1,5 @@
 package com.studyroom.cms.controller;
 
-import com.studyroom.cms.entity.Student;
 import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.ResultCodeEnum;
 import com.studyroom.cms.service.StudentService;
@@ -25,8 +24,10 @@ public class StudentController {
             HashMap<String,String> needParams = new HashMap<>();
             needParams.put("type",request.getParameter("type"));
             needParams.put("number",request.getParameter("number"));
+            needParams.put("sex",request.getParameter("sex"));
             needParams.put("name",request.getParameter("name"));
             needParams.put("campus",request.getParameter("campus"));
+            needParams.put("email",request.getParameter("email"));
             needParams.put("finish_year",request.getParameter("finish_year"));
             needParams.put("password",request.getParameter("password"));
 
@@ -88,6 +89,48 @@ public class StudentController {
             int pageSize = (pageSizeStr != null &&  pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
             HashMap<String,Object> ret = studentService.getList(page,pageSize);
             return Result.listSuccess(Integer.valueOf(ret.get("count").toString()),ret.get("list"));
+        }catch (Exception e){
+            return Result.error();
+        }
+    }
+
+    @RequestMapping("/modpwd")
+    public Result modPwd(HttpServletRequest request, HttpServletResponse respons){
+        try{
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            if (username == null || username == "" || password == null || password == ""){
+                return Result.fail(ResultCodeEnum.MISSPARAM);
+            }
+
+            int effectId = studentService.modOneColumn("password",password,username);
+            if (effectId == 0) {
+                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+            }else{
+                return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
+            }
+
+        }catch (Exception e){
+            return Result.error();
+        }
+    }
+
+    @RequestMapping("/modemail")
+    public Result modEmail(HttpServletRequest request, HttpServletResponse respons){
+        try{
+            String username = request.getParameter("username");
+            String email = request.getParameter("email");
+            if (username == null || username == "" || email == null || email == ""){
+                return Result.fail(ResultCodeEnum.MISSPARAM);
+            }
+
+            int effectId = studentService.modOneColumn("email",email,username);
+            if (effectId == 0) {
+                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+            }else{
+                return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
+            }
+
         }catch (Exception e){
             return Result.error();
         }
