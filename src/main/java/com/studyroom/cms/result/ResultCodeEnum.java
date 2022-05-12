@@ -15,7 +15,12 @@ public enum ResultCodeEnum {
     LOGOUTFAIL(20002,"登出失败"),
     TIME_NOT_ENOUGH(15001,"自习时间不足"),
     STUDENT_NUMBER_NOT_VALID(15002,"学生NUMBER无效"),
-    STUDY_SEAT_NOT_VALID(15003,"对于的座位不存在");
+    STUDY_SEAT_NOT_VALID(15003,"对于的座位不存在"),
+    STUDENT_ID_NOT_MATCHING(15004,"用于登录的学生ID与想操作的学生ID不一样"),
+    ORDER_MESSAGE_NOT_EXIST(15005,"没有对应的预约信息"),
+    SIGNIN_TIME_OUT(15005,"已经过了签到时间"),
+    SIGNIN_TIME_TOO_EARLY(15006,"签到时间过早"),
+    IS_SIGNINED(15007,"您已经签过到");
 
 
     private Integer code;

@@ -1,11 +1,13 @@
 package com.studyroom.cms.controller;
 
+import com.studyroom.cms.result.Const;
 import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.ResultCodeEnum;
 import com.studyroom.cms.service.ReserveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +31,7 @@ public class ReserveController {
     }
 
     @RequestMapping("/order")
-    public Result order(HttpServletRequest request, HttpServletResponse response){
+    public Result order(HttpServletRequest request, HttpServletResponse response,HttpSession session){
         try {
             //根据座位编号,自习室开始时间,自习室结束时间进行预约
 
@@ -48,14 +50,36 @@ public class ReserveController {
 
             Date st = sdf.parse(startTime);
             Date et = sdf.parse(endTime);
+            Object numberValue = session.getAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN);
+            String studentSessionNo = numberValue.toString().split(":")[1];
 
-            return reserveService.OrderLogic(studentNumber,roomNumber,seatNumber,st,et);
+            return reserveService.OrderLogic(studentNumber,roomNumber,seatNumber,st,et,studentSessionNo);
 
 
         } catch (Exception e){
             return Result.error();
         }
 
+    }
+
+    @RequestMapping("/signIn")
+    public Result signIn(HttpServletRequest request, HttpServletResponse response,HttpSession session){
+
+        try {
+            Object numberValue = session.getAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN);
+            String studentSessionNo = numberValue.toString().split(":")[1];
+            String studentNumber = request.getParameter("studentNumber");
+            String roomNumber = request.getParameter("room_number");
+            String seatNumber = request.getParameter("seat_number");
+            System.out.println(studentNumber);
+
+
+
+            return reserveService.signInLogic(studentNumber,roomNumber,seatNumber,studentSessionNo);
+
+        }catch (Exception e){
+            return Result.error();
+        }
     }
 
 
