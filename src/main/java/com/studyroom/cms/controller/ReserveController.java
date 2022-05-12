@@ -92,7 +92,7 @@ public class ReserveController {
             String studentSessionNo = numberValue.toString().split(":")[1];
             String orderNo = request.getParameter("orderNo");
             if(orderNo==null){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
             return reserveService.cancelLogic(orderNo,studentSessionNo);
