@@ -43,7 +43,7 @@ public class ReserveController {
             String endTime = request.getParameter("endTime");
 
             if(studentNumber==null || roomNumber==null || seatNumber==null || startTime==null || endTime==null){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

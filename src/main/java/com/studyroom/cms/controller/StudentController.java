@@ -33,7 +33,7 @@ public class StudentController {
 
             for (Object value : needParams.values()){
                 if (value == null || value == ""){
-                    return Result.fail(ResultCodeEnum.MISSPARAM);
+                    return Result.fail(ResultCodeEnum.MISS_PARAM);
                 }
             }
 
@@ -44,14 +44,14 @@ public class StudentController {
             if(type == 1){
                 int id = studentService.addOne(needParams);
                 if (id == 0){
-                    return Result.fail(ResultCodeEnum.USERHASEXIST);
+                    return Result.fail(ResultCodeEnum.USER_HAS_EXIST);
                 }else{
                     return Result.success(new HashMap<String,Object>(){{put("id",id);}});
                 }
             }else{
                 int effectRow = studentService.modOne(needParams);
                 if (effectRow == 0) {
-                    return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                    return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
                 }else{
                     return Result.success(new HashMap<String,Object>(){{put("id",needParams.get("number"));}});
                 }
@@ -66,12 +66,12 @@ public class StudentController {
         try{
             String number = request.getParameter("number");
             if (number == null || number == ""){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
             int effectId = studentService.delOne(number);
             if (effectId == 0) {
-                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
                 return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
             }
@@ -100,12 +100,12 @@ public class StudentController {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
             if (username == null || username == "" || password == null || password == ""){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
             int effectId = studentService.modOneColumn("password",password,username);
             if (effectId == 0) {
-                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
                 return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
             }
@@ -121,12 +121,12 @@ public class StudentController {
             String username = request.getParameter("username");
             String email = request.getParameter("email");
             if (username == null || username == "" || email == null || email == ""){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
             int effectId = studentService.modOneColumn("email",email,username);
             if (effectId == 0) {
-                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
                 return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
             }

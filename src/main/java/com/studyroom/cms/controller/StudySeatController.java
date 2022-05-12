@@ -27,7 +27,7 @@ public class StudySeatController {
             int page = (pageStr != null &&  pageStr != "") ? Integer.parseInt(pageStr) : 1;
             int pageSize = (pageSizeStr != null &&  pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
             if (roomNumber == null || roomNumber == ""){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
             HashMap<String,Object> ret = studySeatService.getListByRoomNumber(page,pageSize,roomNumber);
@@ -44,13 +44,13 @@ public class StudySeatController {
             String number = request.getParameter("number");
             String typeStr = request.getParameter("type");
             if (roomNumber == null || roomNumber == "" || number == null || number == ""){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
             int type = (typeStr == null || typeStr == "") ? 1 : Integer.valueOf(typeStr);
 
             int effectId = studySeatService.modHasPlug(roomNumber,number,type);
             if (effectId == 0){
-                return Result.fail(ResultCodeEnum.ENTITYNOTEXIST);
+                return Result.fail(ResultCodeEnum.ENTITY_NOT_EXIST);
             }
 
             return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});

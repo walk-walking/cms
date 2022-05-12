@@ -33,7 +33,7 @@ public class LoginController {
 
             for (Object value : needParams.values()){
                 if (value == null || value == ""){
-                    return Result.fail(ResultCodeEnum.MISSPARAM);
+                    return Result.fail(ResultCodeEnum.MISS_PARAM);
                 }
             }
 
@@ -50,10 +50,10 @@ public class LoginController {
 
                 return Result.success();
             }else if(pw == ""){
-                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
                 //密码不相等
-                return Result.fail(ResultCodeEnum.LOGINFAIL);
+                return Result.fail(ResultCodeEnum.LOGIN_FAIL);
             }
         }catch (Exception e){
             //数据库执行异常
@@ -65,7 +65,7 @@ public class LoginController {
     public Result Logout(HttpServletRequest request, HttpServletResponse response, HttpSession session){
         String typeStr = request.getParameter("type");
         if (typeStr == null || typeStr == ""){
-            return Result.fail(ResultCodeEnum.MISSPARAM);
+            return Result.fail(ResultCodeEnum.MISS_PARAM);
         }
 
         int type = Integer.parseInt(typeStr);
@@ -75,7 +75,7 @@ public class LoginController {
         if (numberValue == null){
             return Result.success();
         }else{
-            return Result.fail(ResultCodeEnum.LOGOUTFAIL);
+            return Result.fail(ResultCodeEnum.LOGOUT_FAIL);
         }
     }
 
