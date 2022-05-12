@@ -2,6 +2,8 @@ package com.studyroom.cms.service;
 
 
 import com.studyroom.cms.entity.Student;
+import com.studyroom.cms.result.ExceptionCodeEnum;
+import com.studyroom.cms.result.customException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -220,5 +222,34 @@ public class StudentService {
         }
 
         return effecId;
+    }
+
+    public HashMap<String,String> getEmailByNumber(List<String> numberList) throws customException {
+        HashMap<String,String>  ret = new HashMap<>();
+        if (numberList.isEmpty()){
+            return ret;
+        }
+
+        try{
+            StringBuffer numberStr = new StringBuffer();
+            for (int i = 0; i < numberList.size(); ++i){
+                numberStr.append("'");
+                numberStr.append(numberList.get(i));
+                numberStr.append("'");
+                numberStr.append(",");
+            }
+            numberStr.deleteCharAt(numberStr.length()-1);
+            String sql = "select `number`,`email` from `student` where `number` in (" + numberStr.toString() + ") and `is_valid`=1";
+
+            List<Map<String,Object>> sqlRet = jdbcTemplate.queryForList(sql);
+            for (int i = 0; i < sqlRet.size(); ++i){
+                ret.put(sqlRet.get(i).get("number").toString(),sqlRet.get(i).get("email").toString());
+            }
+        }catch (Exception e){
+            //其他异常错误
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.GET_EMAIL_BY_NUMBER_FAIL);
+        }
+        return ret;
     }
 }

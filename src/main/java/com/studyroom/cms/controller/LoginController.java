@@ -28,32 +28,32 @@ public class LoginController {
         try{
             HashMap<String,String> needParams = new HashMap<>();
             needParams.put("type",request.getParameter("type"));
-            needParams.put("username",request.getParameter("username"));
+            needParams.put("number",request.getParameter("number"));
             needParams.put("password",request.getParameter("password"));
 
             for (Object value : needParams.values()){
                 if (value == null || value == ""){
-                    return Result.fail(ResultCodeEnum.MISSPARAM);
+                    return Result.fail(ResultCodeEnum.MISS_PARAM);
                 }
             }
 
             int type = Integer.parseInt(needParams.get("type"));
-            String pw = (type == 1) ? adminService.getPassword(needParams.get("username")) : studentService.getPassword(needParams.get("username"));
+            String pw = (type == 1) ? adminService.getPassword(needParams.get("number")) : studentService.getPassword(needParams.get("number"));
             if (needParams.get("password").equals(pw)){
 
                 //set session Attribute
                 if (type == 1){
-                    session.setAttribute(Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN,Const.CURRENT_ADMIN_NUMBER_PREFIX + needParams.get("username"));
+                    session.setAttribute(Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN,Const.CURRENT_ADMIN_NUMBER_PREFIX + needParams.get("number"));
                 }else{
-                    session.setAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN,Const.CURRENT_STUDENT_NUMBER_PREFIX + needParams.get("username"));
+                    session.setAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN,Const.CURRENT_STUDENT_NUMBER_PREFIX + needParams.get("number"));
                 }
 
                 return Result.success();
             }else if(pw == ""){
-                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
                 //密码不相等
-                return Result.fail(ResultCodeEnum.LOGINFAIL);
+                return Result.fail(ResultCodeEnum.LOGIN_FAIL);
             }
         }catch (Exception e){
             //数据库执行异常
@@ -65,7 +65,7 @@ public class LoginController {
     public Result Logout(HttpServletRequest request, HttpServletResponse response, HttpSession session){
         String typeStr = request.getParameter("type");
         if (typeStr == null || typeStr == ""){
-            return Result.fail(ResultCodeEnum.MISSPARAM);
+            return Result.fail(ResultCodeEnum.MISS_PARAM);
         }
 
         int type = Integer.parseInt(typeStr);
@@ -75,7 +75,7 @@ public class LoginController {
         if (numberValue == null){
             return Result.success();
         }else{
-            return Result.fail(ResultCodeEnum.LOGOUTFAIL);
+            return Result.fail(ResultCodeEnum.LOGOUT_FAIL);
         }
     }
 

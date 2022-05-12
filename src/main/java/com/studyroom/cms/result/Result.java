@@ -22,8 +22,8 @@ public class Result extends HashMap<String,Object> {
 
     public static Result error(){
         Result ret = new Result();
-        ret.put("code",ResultCodeEnum.SYSTEMERROR.getCode());
-        ret.put("msg",ResultCodeEnum.SYSTEMERROR.getDesc());
+        ret.put("code",ResultCodeEnum.SYSTEM_ERROR.getCode());
+        ret.put("msg",ResultCodeEnum.SYSTEM_ERROR.getDesc());
         return ret;
     }
 

@@ -1,5 +1,6 @@
 package com.studyroom.cms.controller;
 
+import com.studyroom.cms.entity.Student;
 import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.ResultCodeEnum;
 import com.studyroom.cms.service.StudentService;
@@ -33,7 +34,7 @@ public class StudentController {
 
             for (Object value : needParams.values()){
                 if (value == null || value == ""){
-                    return Result.fail(ResultCodeEnum.MISSPARAM);
+                    return Result.fail(ResultCodeEnum.MISS_PARAM);
                 }
             }
 
@@ -44,14 +45,14 @@ public class StudentController {
             if(type == 1){
                 int id = studentService.addOne(needParams);
                 if (id == 0){
-                    return Result.fail(ResultCodeEnum.USERHASEXIST);
+                    return Result.fail(ResultCodeEnum.USER_HAS_EXIST);
                 }else{
                     return Result.success(new HashMap<String,Object>(){{put("id",id);}});
                 }
             }else{
                 int effectRow = studentService.modOne(needParams);
                 if (effectRow == 0) {
-                    return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                    return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
                 }else{
                     return Result.success(new HashMap<String,Object>(){{put("id",needParams.get("number"));}});
                 }
@@ -66,12 +67,12 @@ public class StudentController {
         try{
             String number = request.getParameter("number");
             if (number == null || number == ""){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
             int effectId = studentService.delOne(number);
             if (effectId == 0) {
-                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
                 return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
             }
@@ -97,15 +98,29 @@ public class StudentController {
     @RequestMapping("/modpwd")
     public Result modPwd(HttpServletRequest request, HttpServletResponse respons){
         try{
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            if (username == null || username == "" || password == null || password == ""){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+            HashMap<String,String> needParams = new HashMap<>();
+            needParams.put("number",request.getParameter("number"));
+            needParams.put("password",request.getParameter("password"));
+            needParams.put("origin_password",request.getParameter("origin_password"));
+
+            for (String value : needParams.values()){
+                if (value == null || value == ""){
+                    return Result.fail(ResultCodeEnum.MISS_PARAM);
+                }
             }
 
-            int effectId = studentService.modOneColumn("password",password,username);
+            Student stu = studentService.getOneByNumber(needParams.get("number"));
+            if (stu == null){
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
+            }
+
+            if(!stu.getPassword().equals(needParams.get("origin_password"))){
+                return Result.fail(ResultCodeEnum.USER_ORIGIN_PASSWORD_IS_WRONG);
+            }
+
+            int effectId = studentService.modOneColumn("password",needParams.get("password"),needParams.get("number"));
             if (effectId == 0) {
-                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
                 return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
             }
@@ -118,19 +133,46 @@ public class StudentController {
     @RequestMapping("/modemail")
     public Result modEmail(HttpServletRequest request, HttpServletResponse respons){
         try{
-            String username = request.getParameter("username");
+            String number = request.getParameter("number");
             String email = request.getParameter("email");
-            if (username == null || username == "" || email == null || email == ""){
-                return Result.fail(ResultCodeEnum.MISSPARAM);
+            if (number == null || number == "" || email == null || email == ""){
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
             }
 
-            int effectId = studentService.modOneColumn("email",email,username);
+            int effectId = studentService.modOneColumn("email",email,number);
             if (effectId == 0) {
-                return Result.fail(ResultCodeEnum.USERNOTEXIST);
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }else{
                 return Result.success(new HashMap<String,Object>(){{put("id",effectId);}});
             }
 
+        }catch (Exception e){
+            return Result.error();
+        }
+    }
+
+    @RequestMapping("/info")
+    public Result Info(HttpServletRequest request, HttpServletResponse respons){
+        try{
+            String number = request.getParameter("number");
+            if (number == null || number == ""){
+                return Result.fail(ResultCodeEnum.MISS_PARAM);
+            }
+
+            Student stu = studentService.getOneByNumber(number);
+            if (stu == null){
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
+            }
+
+            HashMap<String,Object> row = new HashMap<>();
+            row.put("number",stu.getNumber());
+            row.put("name",stu.getName());
+            row.put("sex",stu.getSex());
+            row.put("campus",stu.getCampus());
+            row.put("email",stu.getEmail());
+            row.put("finish_year",stu.getFinish_year());
+
+            return Result.success(row);
         }catch (Exception e){
             return Result.error();
         }
