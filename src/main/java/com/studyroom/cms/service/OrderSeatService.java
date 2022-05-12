@@ -206,4 +206,34 @@ public class OrderSeatService {
         }
     }
 
+    public void releaseExpiringSeat(List<HashMap<String,String>> expiringSeats) throws customException{
+        if (expiringSeats.isEmpty()){
+            return;
+        }
+
+        String sql = "update `order_seat` set `order_status`=0 " +
+                "where `seat_number`=? and room_number=? and order_status=1";
+        try{
+            for (int i = 0; i < expiringSeats.size(); ++i){
+                String roomNumber = expiringSeats.get(i).get("room_number");
+                String seatNumber = expiringSeats.get(i).get("seat_number");
+
+                jdbcTemplate.update(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        //指定主键
+                        PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(sql);
+                        preparedStatement.setString(1, seatNumber);
+                        preparedStatement.setString(2, roomNumber);
+                        return preparedStatement;
+                    }
+                });
+
+                loggerUtils.info("自习室 " + roomNumber + " 下的 " + seatNumber + " 座位被释放");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.RELEASE_EXPIRING_SEAT_FAIL);
+        }
+    }
 }
