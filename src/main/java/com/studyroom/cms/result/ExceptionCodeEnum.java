@@ -16,7 +16,8 @@ public enum ExceptionCodeEnum {
     GET_NOT_SIGN_IN_AND_NOT_START_ORDER_MESSAGE_FAIL(50012,"未能成功获取到即将开始但未签到的预约订单信息"),
     GET_NOT_SIGN_IN_AND_HAS_START_ORDER_MESSAGE_FAIL(50013,"未能成功获取到已经开始但未签到的预约订单信息"),
     GET_ORDER_MESSAGE_BY_CONDITION_FAIL(50014,"未能根据筛选条件返回预约订单对象"),
-    GET_EMAIL_BY_NUMBER_FAIL(50015,"未能根据学号成功获取邮箱");
+    GET_EMAIL_BY_NUMBER_FAIL(50015,"未能根据学号成功获取邮箱"),
+    BATCH_ADD_BREACH_MESSAGE_FAIL(50016,"批量插入学生违规信息失败");
 
     private Integer code;
     private String errMsg;

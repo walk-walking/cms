@@ -5,6 +5,7 @@ import com.studyroom.cms.entity.StudentOrderMessage;
 import com.studyroom.cms.result.customException;
 import com.studyroom.cms.service.StudentOrderMessageService;
 import com.studyroom.cms.service.StudentService;
+import com.studyroom.cms.utils.EmailSend;
 import com.studyroom.cms.utils.LoggerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -27,6 +28,9 @@ public class NotSignNoticeTask {
 
     @Autowired
     private LoggerUtils loggerUtils;
+
+    @Autowired
+    private EmailSend emailSendUtils;
 
     //学生预约信息表 student_order_message
     //学生信息表 student
@@ -59,7 +63,12 @@ public class NotSignNoticeTask {
                 HashMap<String,String>  emailMap = studentService.getEmailByNumber(new ArrayList<>(mailContent.keySet()));
                 if (!emailMap.isEmpty()){
                     //4.调用邮件服务发送邮件
-
+                    for(String stuNumber : emailMap.keySet()){
+                        if (mailContent.containsKey(stuNumber)){
+                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "自习室未签到提醒",mailContent.get(stuNumber));
+                            loggerUtils.info("学生" + stuNumber + "的自习室未签到提醒邮件发送成功");
+                        }
+                    }
                 }
             }
 
