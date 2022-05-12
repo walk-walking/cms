@@ -2,6 +2,8 @@ package com.studyroom.cms.utils;
 
 
 
+import org.springframework.stereotype.Component;
+
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -11,6 +13,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.Properties;
 
+@Component
 public class EmailSend {
     private static Session session = null;
     private String auth_password = "crnuxywhhusfbegc";
