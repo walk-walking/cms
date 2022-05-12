@@ -43,13 +43,13 @@ public class ReleaseSeatTask {
         date = calendar.getTime();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:00:00");
         String time = sdf.format(date);
-//        System.out.println(time);
+        loggerUtils.info("将即将到期的已预约座位进行释放的定时任务开始执行,本次操作的数据是预约结束时间为"+time);
 
         try{
             //1.从student_order_message中筛选出预约结束时间为15:00、预约有效、且已进行签到的预约记录，
             //  再从预约记录中获取到即将被释放的座位信息(自习室编号和座位编号)ListA
             List<HashMap<String ,String>> expiringSeats = studentOrderMessageService.getExpiringSeat(time);
-//            System.out.println(expiringSeats);
+            loggerUtils.info(time + "结束的预约记录所对应的座位：" + expiringSeats.toString());
             if (!expiringSeats.isEmpty()){
                 //2.order_seat中座位信息属于ListA的座位状态修改为可预约
                 orderSeatService.releaseExpiringSeat(expiringSeats);

@@ -218,7 +218,7 @@ public class OrderSeatService {
                 String roomNumber = expiringSeats.get(i).get("room_number");
                 String seatNumber = expiringSeats.get(i).get("seat_number");
 
-                jdbcTemplate.update(new PreparedStatementCreator() {
+                int effectRow = jdbcTemplate.update(new PreparedStatementCreator() {
                     @Override
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                         //指定主键
@@ -229,7 +229,9 @@ public class OrderSeatService {
                     }
                 });
 
-                loggerUtils.info("自习室 " + roomNumber + " 下的 " + seatNumber + " 座位被释放");
+                if(effectRow > 0){
+                    loggerUtils.info("自习室 " + roomNumber + " 下的 " + seatNumber + " 座位被释放");
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

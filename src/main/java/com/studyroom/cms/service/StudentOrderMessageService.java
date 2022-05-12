@@ -32,7 +32,6 @@ public class StudentOrderMessageService {
             sql.append("'");
 
             List<Map<String,Object>> sqlRet = jdbcTemplate.queryForList(sql.toString());
-            System.out.println(sql.toString());
             for (int i = 0; i < sqlRet.size(); ++i){
                 HashMap<String,String> row = new HashMap<>();
                 row.put("seat_number",sqlRet.get(i).get("seat_number").toString());

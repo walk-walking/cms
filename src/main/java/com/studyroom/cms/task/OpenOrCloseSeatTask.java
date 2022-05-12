@@ -44,10 +44,12 @@ public class OpenOrCloseSeatTask {
         date = calendar.getTime();
         SimpleDateFormat sdf=new SimpleDateFormat("HH:00");
         String time = sdf.format(date);
+        loggerUtils.info("根据预约规则来打开或关闭座位预约的定时任务开始执行，本次操作的数据是可开始预约或者不可预约的时间为" + time);
 
         try{
             //1.从order_rule中获取到13:00要开放的自习室编号列表ListA
             List<String>  openRoomList = orderRuleService.getRoomsByTime(time, OrderRule.ORDER_TIME_TYPE_OPEN);
+            loggerUtils.info(time + "要开放的自习室：" + openRoomList.toString());
             if (!openRoomList.isEmpty()){
                 //2.order_seat中自习室编号属于ListA的座位状态修改为可预约
                 orderSeatService.modSeatStatusByRoom(openRoomList, OrderSeat.ORDER_STATUS_OPEN);
@@ -55,6 +57,7 @@ public class OpenOrCloseSeatTask {
 
             //3.从order_rule中获取到13:00要关闭的自习室编号集合ListB
             List<String>  closeRoomList = orderRuleService.getRoomsByTime(time, OrderRule.ORDER_TIME_TYPE_CLOSE);
+            loggerUtils.info(time + "要关闭的自习室：" + closeRoomList.toString());
             if (!closeRoomList.isEmpty()){
                 //4.order_seat中自习室编号属于ListB的座位状态修改为未开放
                 orderSeatService.modSeatStatusByRoom(closeRoomList, OrderSeat.ORDER_STATUS_NOTOPEN);
