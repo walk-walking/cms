@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -180,6 +181,18 @@ public class OrderSeatService {
         return orderSeat;
     }
 
+    /**
+     * 根据roomNumber返回尚未预约的座位
+     * @param roomNumber
+     * @return
+     * @throws Exception
+     */
+    public List<OrderSeat> getUnReserveSeatByRoomNumber(String roomNumber) throws Exception{
+        List<OrderSeat> orderSeats = new ArrayList<>();
+
+        return  orderSeats;
+    }
+
     public void modSeatStatusByRoom(List<String> roomList,int newStatus) throws customException{
         if(roomList.isEmpty()){
             return;
@@ -238,4 +251,5 @@ public class OrderSeatService {
             throw new customException(ExceptionCodeEnum.RELEASE_EXPIRING_SEAT_FAIL);
         }
     }
+
 }
