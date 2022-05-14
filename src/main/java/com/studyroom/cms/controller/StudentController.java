@@ -88,6 +88,10 @@ public class StudentController {
             String pageSizeStr = request.getParameter("limit");
             int page = (pageStr != null &&  pageStr != "") ? Integer.parseInt(pageStr) : 1;
             int pageSize = (pageSizeStr != null &&  pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
+            if (page <= 0 || pageSize <= 0){
+                return Result.fail(ResultCodeEnum.WRONG_PARAM_VALUE);
+            }
+
             HashMap<String,Object> ret = studentService.getList(page,pageSize);
             return Result.listSuccess(Integer.valueOf(ret.get("count").toString()),ret.get("list"));
         }catch (Exception e){

@@ -14,6 +14,8 @@ public enum ResultCodeEnum {
 
     USER_ORIGIN_PASSWORD_IS_WRONG(10006,"用户提供的原有密码错误"),
 
+    WRONG_PARAM_VALUE(10007,"参数值错误"),
+
     NOT_LOGIN(20001,"没有登录"),
     LOGOUT_FAIL(20002,"登出失败"),
     TIME_NOT_ENOUGH(15001,"自习时间不足"),
