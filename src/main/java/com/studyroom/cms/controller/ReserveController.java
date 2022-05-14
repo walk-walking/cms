@@ -107,7 +107,16 @@ public class ReserveController {
             Object numberValue = session.getAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN);
             String studentSessionNo = numberValue.toString().split(":")[1];
             String studentNumber = request.getParameter("studentNumber");
-            return reserveService.queryReserverListLogic(studentNumber,studentSessionNo);
+            String pageStr = request.getParameter("page");
+            String pageSizeStr = request.getParameter("limit");
+
+
+            int page = (pageStr != null &&  pageStr != "") ? Integer.parseInt(pageStr) : 1;
+            int pageSize = (pageSizeStr != null &&  pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
+            if(page<=0 || pageSize<=0){
+                return Result.fail(ResultCodeEnum.PAGE_OR_PAGESIZE_LESS_THAN_ZERO);
+            }
+            return reserveService.queryReserverListLogic(studentNumber,studentSessionNo,page,pageSize);
 
         }catch (Exception e){
             return Result.error();
@@ -118,7 +127,15 @@ public class ReserveController {
     public Result queryUnReserveList(HttpServletRequest request, HttpServletResponse response){
         try {
             String studyRoomNumber = request.getParameter("studyRoomNumber");
-            return reserveService.queryUnReserverListLogic(studyRoomNumber);
+            String pageStr = request.getParameter("page");
+            String pageSizeStr = request.getParameter("limit");
+            int page = (pageStr != null &&  pageStr != "") ? Integer.parseInt(pageStr) : 1;
+            int pageSize = (pageSizeStr != null &&  pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
+            if(page<=0 || pageSize<=0){
+                return Result.fail(ResultCodeEnum.PAGE_OR_PAGESIZE_LESS_THAN_ZERO);
+            }
+
+            return reserveService.queryUnReserverListLogic(studyRoomNumber,page,pageSize);
 
         }catch (Exception e){
             return Result.error();

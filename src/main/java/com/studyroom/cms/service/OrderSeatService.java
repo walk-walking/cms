@@ -271,4 +271,21 @@ public class OrderSeatService {
         }
     }
 
+
+    public List<OrderSeat> getList(int pageSize, int page, List<OrderSeat> os){
+        List<OrderSeat> resultOS = new ArrayList<>();
+        if(pageSize*(page-1)> os.size()){
+            return resultOS;
+        }
+        int count = 0;
+        for(int i = pageSize*(page-1) ; i < os.size(); i ++){
+            resultOS.add(os.get(i));
+            count++;
+            if(count==pageSize){
+                break;
+            }
+        }
+
+        return resultOS;
+    }
 }

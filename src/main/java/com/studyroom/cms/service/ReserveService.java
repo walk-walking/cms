@@ -237,7 +237,7 @@ public class ReserveService {
      * @param studentSessionNo
      * @return
      */
-    public Result queryReserverListLogic(String studentNumber,String studentSessionNo){
+    public Result queryReserverListLogic(String studentNumber,String studentSessionNo,int page,int limit){
         //权限检查
         if(!studentIDAuthority(studentNumber,studentSessionNo)){
             return Result.fail(ResultCodeEnum.STUDENT_ID_NOT_MATCHING);
@@ -251,6 +251,7 @@ public class ReserveService {
             condition.append(studentNumber);
 
             ret = studentOrderMessageService.getOrderMessageByCondition(condition.toString());
+            ret = getList(limit,page,ret);
 
 
             //return
@@ -268,7 +269,7 @@ public class ReserveService {
      * @param studyRoomNumber
      * @return
      */
-    public Result queryUnReserverListLogic(String studyRoomNumber){
+    public Result queryUnReserverListLogic(String studyRoomNumber,int page,int limit){
         //使用StudentOrderMessageService的方法
         List<StudentOrderMessage> ret = new ArrayList<>();
         List<OrderSeat> orderSeats = new ArrayList<>();
@@ -293,6 +294,9 @@ public class ReserveService {
                 }
             }
             orderSeats.removeAll(delList);
+            orderSeats = orderSeatService.getList(limit,page,orderSeats);
+
+
 
 
             //return
@@ -398,6 +402,32 @@ public class ReserveService {
         }
 
         return false;
+
+    }
+
+    /**
+     * studentOrderMessage_getlist
+     * @param pageSize
+     * @param page
+     * @param som
+     * @return
+     */
+    public List<StudentOrderMessage> getList(int pageSize,int page,List<StudentOrderMessage> som){
+        System.out.println(som.size());
+        List<StudentOrderMessage> resultOM = new ArrayList<>();
+        if(pageSize*(page-1)> som.size()){
+            return resultOM;
+        }
+        int count = 0;
+        for(int i = pageSize*(page-1) ; i < som.size(); i ++){
+            resultOM.add(som.get(i));
+            count++;
+            if(count==pageSize){
+                break;
+            }
+        }
+        return resultOM;
+
 
     }
 

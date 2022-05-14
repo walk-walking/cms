@@ -27,7 +27,9 @@ public enum ResultCodeEnum {
     ORDER_NUMBER_NOT_EXIST(15008,"没有对应的订单"),
     CANCEL_TIME_OUT(15009,"已经过了可以取消订单的时间"),
     IS_CANCEL(15009,"已经取消过预约"),
-    REVERSE_MESSAGE_QUERY_FAIL(15010,"查询对应学生NUMBER的有效预约信息失败");
+    REVERSE_MESSAGE_QUERY_FAIL(15010,"查询对应学生NUMBER的有效预约信息失败"),
+    PAGE_OR_PAGESIZE_LESS_THAN_ZERO(15011,"页码和页长小于等于0");
+
 
 
     private Integer code;
