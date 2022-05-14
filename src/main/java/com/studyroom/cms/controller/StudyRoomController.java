@@ -66,6 +66,10 @@ public class StudyRoomController {
 
             int page = (pageStr != null &&  pageStr != "") ? Integer.parseInt(pageStr) : 1;
             int pageSize = (pageSizeStr != null &&  pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
+            if (page <= 0 || pageSize <= 0){
+                return Result.fail(ResultCodeEnum.WRONG_PARAM_VALUE);
+            }
+
             HashMap<String,Object> condition = new HashMap<>();
             for (String key : condStr.keySet()){
                 String value = condStr.get(key);
