@@ -56,7 +56,7 @@ public class UpdateOrderSeatTask {
             //3.删除order_seat中未设置预约规则的座位(eg:删除JA102下的所有座位)
             orderSeatService.deleteUnruledSeat(ruledRooms);
 
-            //4.从order_rule中筛选出mtime为24小时内的自习室编号List
+            //4.从order_rule中筛选出mtime为24小时内([前一天22:00,今天22：00))的自习室编号List
             List<String> latestRulesRooms = orderRuleService.getLatestRuledRooms();
             loggerUtils.info("24小时内预约规则被修改的自习室：" + latestRulesRooms.toString());
             if (!latestRulesRooms.isEmpty()){
@@ -64,7 +64,7 @@ public class UpdateOrderSeatTask {
                 orderSeatService.updateSeatOrderRule(latestRulesRooms);
             }
 
-            //6.从study_seat中筛选出mtime为24小时内的座位信息
+            //6.从study_seat中筛选出mtime为24小时内([前一天22:00,今天22：00))的座位信息
             List<HashMap<String,String>> latestModSeats = studySeatService.getLatestModSeat();
             loggerUtils.info("24小时内被修改的座位："+ latestModSeats.toString());
             if (!latestModSeats.isEmpty()){

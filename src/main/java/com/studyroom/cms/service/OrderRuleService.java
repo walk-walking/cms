@@ -47,9 +47,10 @@ public class OrderRuleService {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_MONTH,-1);
-        date = calendar.getTime();
+        Date preDate = calendar.getTime();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        String sql = "select `room_number` from `order_rule` where `mtime` >= '" + sdf.format(date) + " 22:00:00'";
+        String sql = "select `room_number` from `order_rule` where `mtime` >= '" + sdf.format(preDate) + " 22:00:00' and " +
+                "`mtime` < '" + sdf.format(date) +" 22:00:00'";
 
         try{
             List<Map<String,Object>> sqlRet = jdbcTemplate.queryForList(sql);
@@ -89,7 +90,7 @@ public class OrderRuleService {
         return orderRule;
     }
 
-    public List<String> getRoomsByTime(String time, String type) throws customException{
+    public List<String> getEffectRoomsByTime(String time, String type, String effectTime) throws customException{
         List<String> ret = new ArrayList<>();
         StringBuffer sql = new StringBuffer();
         if(type == OrderRule.ORDER_TIME_TYPE_OPEN){
@@ -98,6 +99,8 @@ public class OrderRuleService {
             sql.append("select `room_number` from `order_rule` where `close_time` = '");
         }
         sql.append(time);
+        sql.append("' and `mtime` < '");
+        sql.append(effectTime);
         sql.append("'");
 
         try{
