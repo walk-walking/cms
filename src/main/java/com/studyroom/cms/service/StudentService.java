@@ -160,7 +160,7 @@ public class StudentService {
         HashMap<String,Object> res = new HashMap<>();
         int offset = (page - 1) * pageSize;
         int rowcnt = pageSize;
-        String sql = "select `number`,`name`,`sex`,`campus`,`email`,`finish_year` from `student` where `is_valid`=1 order by `id` desc limit " + offset + "," + rowcnt;
+        String sql = "select `number`,`name`,`sex`,`campus`,`email`,`finish_year`,`password` from `student` where `is_valid`=1 order by `id` desc limit " + offset + "," + rowcnt;
         try{
             List<Map<String,Object>> rs = jdbcTemplate.queryForList(sql);
             int count = getCount();
@@ -174,6 +174,7 @@ public class StudentService {
                 row.put("campus",rs.get(i).get("campus"));
                 row.put("email",rs.get(i).get("email"));
                 row.put("finish_year",rs.get(i).get("finish_year"));
+                row.put("password",rs.get(i).get("password"));
                 data.add(row);
             }
             res.put("list",data);
