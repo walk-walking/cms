@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderSeatService {
@@ -182,13 +183,31 @@ public class OrderSeatService {
     }
 
     /**
-     * 根据roomNumber返回尚未预约的座位
+     * 根据roomNumber 根据room_number和时间戳,返回可预约的时间列表
      * @param roomNumber
      * @return
      * @throws Exception
      */
     public List<OrderSeat> getUnReserveSeatByRoomNumber(String roomNumber) throws Exception{
         List<OrderSeat> orderSeats = new ArrayList<>();
+        try {
+            String sql = "select `building`,`seat_number`,`order_start_time`,`order_end_time`,`order_max_time` from order_seat where ";
+            sql += "`room_number`='" + roomNumber + "' and `order_status` = '-1'";
+
+            List<Map<String, Object>> sqlRet = jdbcTemplate.queryForList(sql.toString());
+            for (int i = 0; i < sqlRet.size(); ++i) {
+                OrderSeat one = new OrderSeat();
+                one.setSeatNumber(sqlRet.get(i).get("seat_number").toString());
+                one.setOrderStartTime(sqlRet.get(i).get("order_start_time").toString());
+                one.setOrderEndTime(sqlRet.get(i).get("order_end_time").toString());
+                one.setBuilding(sqlRet.get(i).get("building").toString());
+                one.setRoomNumber(roomNumber);
+                one.setOrderMaxTime(Integer.parseInt(sqlRet.get(i).get("order_max_time").toString()));
+                orderSeats.add(one);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         return  orderSeats;
     }

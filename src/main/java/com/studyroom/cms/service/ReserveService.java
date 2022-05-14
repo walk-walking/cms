@@ -36,6 +36,9 @@ public class ReserveService {
     @Autowired
     StudentOrderMessageService studentOrderMessageService;
 
+    @Autowired
+    OrderSeatService orderSeatService;
+
 
     /**
      * 预约逻辑
@@ -248,7 +251,7 @@ public class ReserveService {
             condition.append(studentNumber);
 
             ret = studentOrderMessageService.getOrderMessageByCondition(condition.toString());
-            System.out.println(ret);
+
 
             //return
             return Result.listSuccess(ret.size(),ret);
@@ -260,10 +263,46 @@ public class ReserveService {
 
     }
 
+    /**
+     * 根据studyRoomNumber(自习室number)获取未预约的座位list
+     * @param studyRoomNumber
+     * @return
+     */
     public Result queryUnReserverListLogic(String studyRoomNumber){
+        //使用StudentOrderMessageService的方法
+        List<StudentOrderMessage> ret = new ArrayList<>();
+        List<OrderSeat> orderSeats = new ArrayList<>();
+        try {
+            StringBuffer condition = new StringBuffer();
+            condition.append("`is_order_valid`=0 and ");
+            condition.append("`room_number`='");
+            condition.append(studyRoomNumber);
+            condition.append("'");
+
+            ret = studentOrderMessageService.getOrderMessageByCondition(condition.toString());
+            //获取对应的OrderLogic
+            orderSeats = orderSeatService.getUnReserveSeatByRoomNumber(studyRoomNumber);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar calendar = Calendar.getInstance();
+            String nowTimeStr = sdf.format(calendar.getTime());
+            nowTimeStr = nowTimeStr.substring(11,16);
+            List<OrderSeat> delList = new ArrayList();
+            for(int i = 0 ; i < orderSeats.size();i++){
+                if(!checkTimeIn(orderSeats.get(i).getOrderStartTime(),orderSeats.get(i).getOrderEndTime(),nowTimeStr)){
+                    delList.add(orderSeats.get(i));
+                }
+            }
+            orderSeats.removeAll(delList);
 
 
-        return Result.success();
+            //return
+            return Result.listSuccess(orderSeats.size(),orderSeats);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(ResultCodeEnum.REVERSE_MESSAGE_QUERY_FAIL);
+            }
+
     }
 
 
@@ -338,6 +377,29 @@ public class ReserveService {
         return nowTime;
     }
 
+    /**
+     * 输入三个时间,判断第三个时间是否在1~2之间
+     * 时间例子
+     * 7:00 22:00
+     * 13:19
+     * @param timeStart
+     * @param timeEnd
+     * @param checkTime
+     * @return
+     * yes:true
+     * no:false
+     */
+    public boolean checkTimeIn(String timeStart,String timeEnd,String checkTime){
+        int st = (Integer.parseInt(timeStart.split(":")[0])*60+Integer.parseInt(timeStart.split(":")[1]));
+        int et = (Integer.parseInt(timeEnd.split(":")[0])*60+Integer.parseInt(timeEnd.split(":")[1]));
+        int nt = (Integer.parseInt(checkTime.split(":")[0])*60+Integer.parseInt(checkTime.split(":")[1]));
+        if(st<=nt && nt<=et){
+            return true;
+        }
+
+        return false;
+
+    }
 
 
 
