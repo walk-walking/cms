@@ -26,6 +26,10 @@ public class StudySeatController {
             String roomNumber = request.getParameter("room_number");
             int page = (pageStr != null &&  pageStr != "") ? Integer.parseInt(pageStr) : 1;
             int pageSize = (pageSizeStr != null &&  pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
+            if (page <= 0 || pageSize <= 0){
+                return Result.fail(ResultCodeEnum.WRONG_PARAM_VALUE);
+            }
+
             if (roomNumber == null || roomNumber == ""){
                 return Result.fail(ResultCodeEnum.MISS_PARAM);
             }

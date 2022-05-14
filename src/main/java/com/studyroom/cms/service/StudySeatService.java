@@ -143,10 +143,11 @@ public class StudySeatService {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_MONTH,-1);
-        date = calendar.getTime();
+        Date preDate = calendar.getTime();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 
-        String sql = "select `room_number`,`number`,`building`,`is_valid` from `study_seat` where mtime >= '" + sdf.format(date) + " 22:00:00'";
+        String sql = "select `room_number`,`number`,`building`,`is_valid` from `study_seat` " +
+                "where mtime >= '" + sdf.format(preDate) + " 22:00:00' and `mtime` < '" + sdf.format(date) +" 22:00:00'";
         try{
             List<Map<String,Object>> sqlRet = jdbcTemplate.queryForList(sql);
             for (int i = 0; i< sqlRet.size(); ++i){
