@@ -20,7 +20,7 @@ public enum ResultCodeEnum {
     LOGOUT_FAIL(20002,"登出失败"),
     TIME_NOT_ENOUGH(15001,"自习时间不足"),
     STUDENT_NUMBER_NOT_VALID(15002,"学生NUMBER无效"),
-    STUDY_SEAT_NOT_VALID(15003,"对于的座位不存在"),
+    STUDY_SEAT_NOT_VALID(15003,"对应的座位不存在或无效"),
     STUDENT_ID_NOT_MATCHING(15004,"用于登录的学生ID与想操作的学生ID不一样"),
     ORDER_MESSAGE_NOT_EXIST(15005,"没有对应的预约信息"),
     SIGNIN_TIME_OUT(15005,"已经过了签到时间"),
@@ -30,7 +30,8 @@ public enum ResultCodeEnum {
     CANCEL_TIME_OUT(15009,"已经过了可以取消订单的时间"),
     IS_CANCEL(15009,"已经取消过预约"),
     REVERSE_MESSAGE_QUERY_FAIL(15010,"查询对应学生NUMBER的有效预约信息失败"),
-    PAGE_OR_PAGESIZE_LESS_THAN_ZERO(15011,"页码和页长小于等于0");
+    PAGE_OR_PAGESIZE_LESS_THAN_ZERO(15011,"页码和页长小于等于0"),
+    RESERVE_TIME_ERROR(15012,"预约时间错误");
 
 
 

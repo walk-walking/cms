@@ -6,8 +6,12 @@ import com.studyroom.cms.result.customException;
 import com.studyroom.cms.utils.LoggerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -119,6 +123,38 @@ public class StudentOrderMessageService {
         }
 
         return ret;
+    }
+
+    public void reserve_updateSOM(StudentOrderMessage som){
+
+            String insertSql = "insert into student_order_message"+
+                "(seat_number,room_number,student_number,order_start_time,order_end_time,is_sign_in,is_order_valid,ctime,mtime)"+
+                "values(?,?,?,?,?,?,?,?,?)";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        String nowTimeStr = sdf.format(calendar.getTime());
+
+        System.out.println("reserve_updateSOM");
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                //指定主键
+                PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(insertSql);
+                preparedStatement.setString(1, som.getSeatNumber());
+                preparedStatement.setString(2, som.getRoomNumber());
+                preparedStatement.setString(3, som.getStudentNumber());
+                preparedStatement.setString(4, sdf.format(som.getOrderStartTime()));
+                preparedStatement.setString(5, sdf.format(som.getOrderEndTime()));
+                preparedStatement.setInt(6, som.getIsSignIn());
+                preparedStatement.setInt(7, som.getIsOrderValid());
+                preparedStatement.setString(8, nowTimeStr);
+                preparedStatement.setString(9, nowTimeStr);
+                System.out.println(preparedStatement);
+                return preparedStatement;
+            }
+        });
+
+
     }
 
 }

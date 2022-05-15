@@ -47,11 +47,11 @@ public class ReserveService {
      * @param roomNumber
      * @param seatNumber
      * @param startTime
-     * @param Endtime
+     * @param endtime
      * @return
      * @throws Exception
      */
-    public Result OrderLogic(String studentNumber,String roomNumber, String seatNumber, Date startTime, Date Endtime, String studentSessionNo) throws Exception {
+    public Result OrderLogic(String studentNumber,String roomNumber, String seatNumber, Date startTime, Date endtime, String studentSessionNo) throws Exception {
 
         if(!studentIDAuthority(studentNumber,studentSessionNo)){
             return Result.fail(ResultCodeEnum.STUDENT_ID_NOT_MATCHING);
@@ -61,24 +61,53 @@ public class ReserveService {
         }
 
 
-        if(!timeDistance(Endtime,startTime,14400)){
+        if(!timeDistance(startTime,endtime,-3600)){
             return Result.fail(ResultCodeEnum.TIME_NOT_ENOUGH);
         }
 
 
 
-        //检查roomNumber,seatNumber
-        StudySeat ss = studySeatService.getSeatByMixNumber(roomNumber,seatNumber);
-        if(ss == null){
+        //检查seat是否可预约
+        OrderSeat os = orderSeatService.getOneByMixNumber(roomNumber,seatNumber);
+
+        System.out.println(roomNumber);
+        System.out.println(os.getRoomNumber());
+        if(os.getOrderStatus()!=0){
             return Result.fail(ResultCodeEnum.STUDY_SEAT_NOT_VALID);
         }
 
 
-
         //检查预约时间是否满足预约规则
-        //to be c
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        String nowTimeStr = sdf.format(calendar.getTime());
+//        nowTimeStr = nowTimeStr.substring(11,16);
+        if(!checkTimeIn(os.getOrderStartTime(),os.getOrderEndTime(),nowTimeStr.substring(11,16))){
+            return Result.fail(ResultCodeEnum.RESERVE_TIME_ERROR);
+        }
 
 
+
+        //预约规则
+        //1.设置该位置不可预约
+        orderSeatService.reserve_Update(os.getId());
+//        som.setOrderStartTime();
+
+
+
+        //2.新建student_order_message逻辑
+        StudentOrderMessage som = new StudentOrderMessage();
+        som.setSeatNumber(os.getSeatNumber());
+        som.setIsOrderValid(1);
+        som.setIsSignIn(0);
+        som.setRoomNumber(os.getRoomNumber());
+        som.setOrderStartTime(startTime);
+        som.setOrderEndTime(endtime);
+        som.setStudentNumber(studentNumber);
+        studentOrderMessageService.reserve_updateSOM(som);
+
+
+        //3.步骤完成
         return Result.success();
     }
 
@@ -381,6 +410,11 @@ public class ReserveService {
         return nowTime;
     }
 
+    public String dateToString(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return sdf.format(date);
+    }
     /**
      * 输入三个时间,判断第三个时间是否在1~2之间
      * 时间例子
@@ -430,7 +464,6 @@ public class ReserveService {
 
 
     }
-
 
 
 }

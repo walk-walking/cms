@@ -288,4 +288,16 @@ public class OrderSeatService {
 
         return resultOS;
     }
+
+    public void reserve_Update(int id){
+        try{
+        String sql = "update `order_seat` set `order_status` = 1 where `id` ='"+ id + "'";
+        jdbcTemplate.update(sql);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.RESET_ORDER_SEAT_STATUS_FAIL);
+        }
+
+    }
 }
