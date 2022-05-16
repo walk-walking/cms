@@ -120,7 +120,7 @@ public class StudentServiceTest {
     @Test
     public void getList() {
         try{
-            HashMap<String,Object> stuList = studentService.getList(1,3);
+            HashMap<String,Object> stuList = studentService.getList(1,3,new HashMap<>());
             Assert.assertNotNull(stuList.get("count"));
             Assert.assertNotNull(stuList.get("list"));
         }catch (Exception e){
@@ -131,7 +131,7 @@ public class StudentServiceTest {
     @Test
     public void getCount() {
         try{
-           int count = studentService.getCount();
+           int count = studentService.getCount("");
            Assert.assertNotEquals(0,count);
         }catch (Exception e){
             Assert.assertEquals("mysql execute error",e.getMessage());
