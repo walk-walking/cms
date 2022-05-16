@@ -15,6 +15,10 @@ public class StudentOrderMessage {
 
     private Date orderEndTime;
 
+    private String orderStartTimeSTR;
+
+    private String orderEndTimeSTR;
+
     private int isSignIn;
 
     private int isOrderValid;
@@ -45,6 +49,14 @@ public class StudentOrderMessage {
 
     public Date getOrderEndTime() {
         return orderEndTime;
+    }
+
+    public String getOrderEndTimeSTR() {
+        return orderEndTimeSTR;
+    }
+
+    public String getOrderStartTimeSTR() {
+        return orderStartTimeSTR;
     }
 
     public int getIsSignIn() {
@@ -81,5 +93,13 @@ public class StudentOrderMessage {
 
     public void setIsOrderValid(int isOrderValid) {
         this.isOrderValid = isOrderValid;
+    }
+
+    public void setOrderEndTimeSTR(String orderEndTimeSTR) {
+        this.orderEndTimeSTR = orderEndTimeSTR;
+    }
+
+    public void setOrderStartTimeSTR(String orderStartTimeSTR) {
+        this.orderStartTimeSTR = orderStartTimeSTR;
     }
 }

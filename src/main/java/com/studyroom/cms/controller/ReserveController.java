@@ -142,6 +142,29 @@ public class ReserveController {
         }
     }
 
+    @RequestMapping("/getRoomList")
+    public Result getRoomListLogic(HttpServletRequest request, HttpServletResponse response,HttpSession session){
+        try {
+
+            String pageStr = request.getParameter("page");
+            String pageSizeStr = request.getParameter("limit");
+            int page = (pageStr != null && pageStr != "") ? Integer.parseInt(pageStr) : 1;
+            int pageSize = (pageSizeStr != null && pageSizeStr != "") ? Integer.parseInt(pageSizeStr) : 10;
+            if (page <= 0 || pageSize <= 0) {
+                return Result.fail(ResultCodeEnum.PAGE_OR_PAGESIZE_LESS_THAN_ZERO);
+            }
+            Object numberValue = session.getAttribute(Const.SAVE_STUDENT_LOGIN_MESSAGE_COLUMN);
+            if(numberValue==null){
+                return Result.fail(ResultCodeEnum.NOT_LOGIN);
+            }
+
+            return reserveService.getRoomListLogic(page,pageSize);
+        }catch (Exception e){
+            return Result.error();
+        }
+
+    }
+
 
 
 }

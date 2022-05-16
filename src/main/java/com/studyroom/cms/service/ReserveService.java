@@ -323,18 +323,31 @@ public class ReserveService {
                 }
             }
             orderSeats.removeAll(delList);
+            int seatsize = orderSeats.size();
             orderSeats = orderSeatService.getList(limit,page,orderSeats);
 
 
 
 
             //return
-            return Result.listSuccess(orderSeats.size(),orderSeats);
+            return Result.listSuccess(seatsize,orderSeats);
 
         }catch (Exception e){
             e.printStackTrace();
             return Result.fail(ResultCodeEnum.REVERSE_MESSAGE_QUERY_FAIL);
             }
+
+    }
+
+    public Result getRoomListLogic(int page,int limit) throws Exception {
+        HashMap<String,Object> condition = new HashMap<>();
+        HashMap<String,Object> ret = studyRoomService.getList(page,limit,condition);
+
+        return Result.listSuccess(Integer.valueOf(ret.get("count").toString()),ret.get("list"));
+
+
+
+
 
     }
 

@@ -202,8 +202,10 @@ public class OrderSeatService {
     public List<OrderSeat> getUnReserveSeatByRoomNumber(String roomNumber) throws Exception{
         List<OrderSeat> orderSeats = new ArrayList<>();
         try {
-            String sql = "select `building`,`seat_number`,`order_start_time`,`order_end_time`,`order_max_time` from order_seat where ";
-            sql += "`room_number`='" + roomNumber + "' and `order_status` = '-1'";
+//            String sql = "select `building`,`seat_number`,`order_start_time`,`order_status`,`order_end_time`,`order_max_time` from order_seat where ";
+//            sql += "`room_number`='" + roomNumber + "' and `order_status` = '-1'";
+            String sql = "select `building`,`seat_number`,`order_start_time`,`order_status`,`order_end_time`,`order_max_time` from order_seat where ";
+            sql += "`room_number`='" + roomNumber +"'";
 
             List<Map<String, Object>> sqlRet = jdbcTemplate.queryForList(sql.toString());
             for (int i = 0; i < sqlRet.size(); ++i) {
@@ -212,6 +214,7 @@ public class OrderSeatService {
                 one.setOrderStartTime(sqlRet.get(i).get("order_start_time").toString());
                 one.setOrderEndTime(sqlRet.get(i).get("order_end_time").toString());
                 one.setBuilding(sqlRet.get(i).get("building").toString());
+                one.setOrderStatus(Integer.parseInt(sqlRet.get(i).get("order_status").toString()));
                 one.setRoomNumber(roomNumber);
                 one.setOrderMaxTime(Integer.parseInt(sqlRet.get(i).get("order_max_time").toString()));
                 orderSeats.add(one);
