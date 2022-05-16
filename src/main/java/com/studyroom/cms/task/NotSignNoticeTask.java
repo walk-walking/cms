@@ -65,7 +65,7 @@ public class NotSignNoticeTask {
                     //4.调用邮件服务发送邮件
                     for(String stuNumber : emailMap.keySet()){
                         if (mailContent.containsKey(stuNumber)){
-                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "自习室未签到提醒",mailContent.get(stuNumber));
+//                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "自习室未签到提醒",mailContent.get(stuNumber));
                             loggerUtils.info("学生" + stuNumber + "的自习室未签到提醒邮件发送成功");
                         }
                     }

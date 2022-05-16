@@ -86,7 +86,7 @@ public class RecordBreachTask {
                     //5.调用邮件服务发送邮件
                     for(String stuNumber : emailMap.keySet()){
                         if (mailContent.containsKey(stuNumber)){
-                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "系统自动释放座位的提醒",mailContent.get(stuNumber));
+//                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "系统自动释放座位的提醒",mailContent.get(stuNumber));
                             loggerUtils.info("学生" + stuNumber + "的系统自动释放座位的提醒邮件发送成功");
                         }
                     }
