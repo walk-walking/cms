@@ -280,11 +280,12 @@ public class ReserveService {
             condition.append(studentNumber);
 
             ret = studentOrderMessageService.getOrderMessageByCondition(condition.toString());
+            int totalSize = ret.size();
             ret = getList(limit,page,ret);
 
 
             //return
-            return Result.listSuccess(ret.size(),ret);
+            return Result.listSuccess(totalSize,ret);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -339,6 +340,13 @@ public class ReserveService {
 
     }
 
+    /**
+     *
+     * @param page
+     * @param limit
+     * @return
+     * @throws Exception
+     */
     public Result getRoomListLogic(int page,int limit) throws Exception {
         HashMap<String,Object> condition = new HashMap<>();
         HashMap<String,Object> ret = studyRoomService.getList(page,limit,condition);
@@ -467,7 +475,10 @@ public class ReserveService {
         }
         int count = 0;
         for(int i = pageSize*(page-1) ; i < som.size(); i ++){
-            resultOM.add(som.get(i));
+            StudentOrderMessage thisSOM = som.get(i);
+            thisSOM.setOrderStartTimeSTR(dateToString(thisSOM.getOrderStartTime()).substring(11,16));
+            thisSOM.setOrderEndTimeSTR(dateToString(thisSOM.getOrderEndTime()).substring(11,16));
+            resultOM.add(thisSOM);
             count++;
             if(count==pageSize){
                 break;
