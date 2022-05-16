@@ -42,7 +42,7 @@ public class RecordBreachTask {
     //学生违法信息表 breach_message
 
     //每天0点15分、1点15分...到21:15分运行
-//    @Scheduled(cron="0 15 0-21 * * ?")     //TODO 删除注释
+    @Scheduled(cron="0 15 0-21 * * ?")
     public void process(){
         //假设当前执行时间为20220512 13:15
         Date date = new Date();

@@ -36,7 +36,7 @@ public class NotSignNoticeTask {
     //学生信息表 student
 
     //每天0点10分、1点10分....到21点10分运行
-//    @Scheduled(cron="0 10 0-21 * * ?")   //TODO 删除注释
+    @Scheduled(cron="0 10 0-21 * * ?")
     public void process(){
         //假设当前时间为20220511 13:10
         Date date = new Date();

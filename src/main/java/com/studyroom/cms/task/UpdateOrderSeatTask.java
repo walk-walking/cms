@@ -43,7 +43,7 @@ public class UpdateOrderSeatTask {
     // - 自习室信息表 study_room
 
     //每天22点运行
-//    @Scheduled(cron="0 0 22 * * ?")   //TODO 删除注释
+    @Scheduled(cron="0 0 22 * * ?")
     public void process(){
         try{
             loggerUtils.info("更新每天可预约座位信息的定时任务开始执行");

@@ -34,7 +34,7 @@ public class SignNoticeTask {
     //学生信息表 student
 
     //每天0点45分、1点45分....到20点45分及23点45分运行
-//    @Scheduled(cron="0 45 0-20,23 * * ?")  //TODO 删除注释
+    @Scheduled(cron="0 45 0-20,23 * * ?")
     public void process(){
         //假设当前时间为20220511 13:45
         Date date = new Date();
