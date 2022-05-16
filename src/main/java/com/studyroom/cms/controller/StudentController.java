@@ -92,7 +92,24 @@ public class StudentController {
                 return Result.fail(ResultCodeEnum.WRONG_PARAM_VALUE);
             }
 
-            HashMap<String,Object> ret = studentService.getList(page,pageSize);
+            HashMap<String,String> condStr = new HashMap<>();
+            condStr.put("number",request.getParameter("number"));
+            condStr.put("name",request.getParameter("name"));
+            condStr.put("sex",request.getParameter("sex"));
+            condStr.put("campus",request.getParameter("campus"));
+            condStr.put("email",request.getParameter("email"));
+            condStr.put("finish_year",request.getParameter("finish_year"));
+
+            HashMap<String,Object> condition = new HashMap<>();
+            for (String key : condStr.keySet()){
+                String value = condStr.get(key);
+                if (value == null || value == ""){
+                    continue;
+                }
+                condition.put(key,value);
+            }
+
+            HashMap<String,Object> ret = studentService.getList(page,pageSize,condition);
             return Result.listSuccess(Integer.valueOf(ret.get("count").toString()),ret.get("list"));
         }catch (Exception e){
             return Result.error();
