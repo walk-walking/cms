@@ -44,7 +44,9 @@ public class StudentServiceTest {
                 {
                     put("number","21210240456");
                     put("name","周小小");
+                    put("sex","女");
                     put("campus","邯郸");
+                    put("email","21210240456@m.fudan.edu.cn");
                     put("finish_year","2025");
                     put("password","2022-fdu");
                 }
@@ -80,7 +82,9 @@ public class StudentServiceTest {
                 {
                     put("number","21210240999");
                     put("name","王小五");
+                    put("sex","男");
                     put("campus","江湾");
+                    put("email","21210240999@m.fudan.edu.cn");
                     put("finish_year","2024");
                     put("password","2022-fdu");
                 }

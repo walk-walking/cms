@@ -2,6 +2,8 @@ package com.studyroom.cms.service;
 
 import com.studyroom.cms.entity.Student;
 import com.studyroom.cms.entity.StudyRoom;
+import com.studyroom.cms.result.ExceptionCodeEnum;
+import com.studyroom.cms.result.customException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -164,5 +166,19 @@ public class StudyRoomService {
         return effectId;
     }
 
+    public List<String> getValidStudyRooms() throws customException {
+        List<String> ret = new ArrayList<>();
+        String sql = "select `number` from `study_room` where `is_valid`=1";
 
+        try{
+            List<Map<String,Object>> sqlRet = jdbcTemplate.queryForList(sql);
+            for (int i = 0; i< sqlRet.size(); ++i){
+                ret.add(sqlRet.get(i).get("number").toString());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.GET_VALID_STUDY_ROOM_FAIL);
+        }
+        return ret;
+    }
 }

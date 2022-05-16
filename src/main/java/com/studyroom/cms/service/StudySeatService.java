@@ -22,11 +22,11 @@ public class StudySeatService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public boolean batchAdd(String roomNumber,String building,int count){
-        String sql = "insert into `study_seat`(`number`,`room_number`,`building`) values (?,?,?)";
+    public boolean batchAdd(String roomNumber,String building,String campus, int count){
+        String sql = "insert into `study_seat`(`number`,`room_number`,`building`,`campus`) values (?,?,?,?)";
         List<Object[]> batchArgs = new ArrayList<>();
         for (int i = 1; i <= count; ++i){
-            batchArgs.add(new Object[]{i,roomNumber,building});
+            batchArgs.add(new Object[]{i,roomNumber,building,campus});
         }
         try{
             jdbcTemplate.batchUpdate(sql,batchArgs);
@@ -91,7 +91,7 @@ public class StudySeatService {
 
     public StudySeat getSeatByMixNumber(String roomNumber, String number) throws Exception{
         StudySeat stuSeat = null;
-        String sql = "select `id`,`number`,`room_number`,`building`,`has_plug`,`is_valid` from study_seat where ";
+        String sql = "select `id`,`number`,`room_number`,`building`,`campus`,`has_plug`,`is_valid` from study_seat where ";
         sql += "`room_number`='" +roomNumber +"' and `number`='" + number +"'";
         try{
             stuSeat = jdbcTemplate.queryForObject(sql, new RowMapper<StudySeat>() {
@@ -102,6 +102,7 @@ public class StudySeatService {
                     row.setNumber(rs.getString("number"));
                     row.setRoom_number(rs.getString("room_number"));
                     row.setBuilding(rs.getString("building"));
+                    row.setCampus(rs.getString("campus"));
                     row.setHas_plug(rs.getInt("has_plug"));
                     row.setIs_valid(rs.getInt("is_valid"));
                     return row;
@@ -146,7 +147,7 @@ public class StudySeatService {
         Date preDate = calendar.getTime();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 
-        String sql = "select `room_number`,`number`,`building`,`is_valid` from `study_seat` " +
+        String sql = "select `room_number`,`number`,`building`,`campus`,`is_valid` from `study_seat` " +
                 "where mtime >= '" + sdf.format(preDate) + " 22:00:00' and `mtime` < '" + sdf.format(date) +" 22:00:00'";
         try{
             List<Map<String,Object>> sqlRet = jdbcTemplate.queryForList(sql);
@@ -156,6 +157,7 @@ public class StudySeatService {
                 row.put("number",sqlRet.get(i).get("number").toString());
                 row.put("is_valid",sqlRet.get(i).get("is_valid").toString());
                 row.put("building",sqlRet.get(i).get("building").toString());
+                row.put("campus",sqlRet.get(i).get("campus").toString());
                 ret.add(row);
             }
         }catch (Exception e){

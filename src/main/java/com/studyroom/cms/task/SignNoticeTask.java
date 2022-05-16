@@ -34,7 +34,7 @@ public class SignNoticeTask {
     //学生信息表 student
 
     //每天0点45分、1点45分....到20点45分及23点45分运行
-//    @Scheduled(cron="0 45 0-20,23 * * ?")  //TODO 删除注释
+    @Scheduled(cron="0 45 0-20,23 * * ?")
     public void process(){
         //假设当前时间为20220511 13:45
         Date date = new Date();
@@ -69,7 +69,7 @@ public class SignNoticeTask {
                     //4.调用邮件服务发送邮件
                     for(String stuNumber : emailMap.keySet()){
                         if (mailContent.containsKey(stuNumber)){
-                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "自习室签到提醒",mailContent.get(stuNumber));
+//                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "自习室签到提醒",mailContent.get(stuNumber));
                             loggerUtils.info("学生" + stuNumber + "的自习室签到提醒邮件发送成功");
                         }
                     }

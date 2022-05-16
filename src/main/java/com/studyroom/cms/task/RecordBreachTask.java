@@ -42,7 +42,7 @@ public class RecordBreachTask {
     //学生违法信息表 breach_message
 
     //每天0点15分、1点15分...到21:15分运行
-//    @Scheduled(cron="0 15 0-21 * * ?")     //TODO 删除注释
+    @Scheduled(cron="0 15 0-21 * * ?")
     public void process(){
         //假设当前执行时间为20220512 13:15
         Date date = new Date();
@@ -86,7 +86,7 @@ public class RecordBreachTask {
                     //5.调用邮件服务发送邮件
                     for(String stuNumber : emailMap.keySet()){
                         if (mailContent.containsKey(stuNumber)){
-                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "系统自动释放座位的提醒",mailContent.get(stuNumber));
+//                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "系统自动释放座位的提醒",mailContent.get(stuNumber));
                             loggerUtils.info("学生" + stuNumber + "的系统自动释放座位的提醒邮件发送成功");
                         }
                     }
