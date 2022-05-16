@@ -34,7 +34,7 @@ public class OpenOrCloseSeatTask {
     //预约规则表 order_rule
 
     //每天0点、1点....21点和23点运行
-//    @Scheduled(cron="0 1 0-21,23 * * ?")  //TODO 删除注释
+    @Scheduled(cron="0 1 0-21,23 * * ?")
     public void process(){
         //假设当前时间为20220331 12:00
         Date date = new Date();

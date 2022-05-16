@@ -2,6 +2,7 @@ package com.studyroom.cms.service;
 
 import com.studyroom.cms.entity.OrderRule;
 import com.studyroom.cms.entity.OrderSeat;
+import com.studyroom.cms.entity.StudyRoom;
 import com.studyroom.cms.result.ExceptionCodeEnum;
 import com.studyroom.cms.result.customException;
 import com.studyroom.cms.utils.LoggerUtils;
@@ -30,7 +31,11 @@ public class OrderSeatService {
     @Autowired
     private LoggerUtils loggerUtils;
 
-    @Autowired OrderRuleService orderRuleService;
+    @Autowired
+    private OrderRuleService orderRuleService;
+
+    @Autowired
+    private StudyRoomService studyRoomService;
 
     public void resetStatus() throws customException{
         try{
@@ -43,7 +48,7 @@ public class OrderSeatService {
         }
     }
 
-    public void deleteUnruledSeat(List<String> ruledRooms) throws customException{
+    public void deleteUnruledOrInvalidSeat(List<String> ruledRooms) throws customException{
         if (ruledRooms.isEmpty()){
             return;
         }
@@ -65,7 +70,7 @@ public class OrderSeatService {
             loggerUtils.info("被删除的座位数量: " + effectRow);
         }catch (Exception e){
             e.printStackTrace();
-            throw new customException(ExceptionCodeEnum.DELETE_UNRULE_SEAT_FAIL);
+            throw new customException(ExceptionCodeEnum.DELETE_UNRULED_OR_INVALID_SEAT_FAIL);
         }
     }
 
@@ -105,8 +110,8 @@ public class OrderSeatService {
         }
 
         String insertSql = "insert into `order_seat` " +
-                "(`room_number`,`seat_number`,`building`,`order_start_time`,`order_end_time`,`order_max_time`) " +
-                "values(?,?,?,?,?,?)";
+                "(`room_number`,`seat_number`,`building`,`campus`,`order_start_time`,`order_end_time`,`order_max_time`) " +
+                "values(?,?,?,?,?,?,?)";
 
         try{
             for (int i = 0; i < latestModSeats.size(); ++i){
@@ -121,28 +126,33 @@ public class OrderSeatService {
                         loggerUtils.info("删除自习室 " + roomNumber + " 下的 "+ seatNumber + " 座位");
                     }
                 }else{
-                    OrderSeat orderSeat = getOneByMixNumber(roomNumber,seatNumber);
-                    if (orderSeat == null){
-                        OrderRule orderRule = orderRuleService.getOneByRoomNumber(roomNumber);
-                        if (orderRule != null){
-                            jdbcTemplate.update(new PreparedStatementCreator() {
-                                @Override
-                                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                                    //指定主键
-                                    PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(insertSql);
-                                    preparedStatement.setString(1, roomNumber);
-                                    preparedStatement.setString(2, seatNumber);
-                                    preparedStatement.setString(3, oneSeat.get("building"));
-                                    preparedStatement.setString(4, orderRule.getOpenTime());
-                                    preparedStatement.setString(5, orderRule.getCloseTime());
-                                    preparedStatement.setInt(6, orderRule.getSingleOrderTime());
-                                    return preparedStatement;
-                                }
-                            });
+                    StudyRoom studyRoom = studyRoomService.getOneByNumber(roomNumber);
+                    if (studyRoom != null){
+                        OrderSeat orderSeat = getOneByMixNumber(roomNumber,seatNumber);
+                        if (orderSeat == null){
+                            OrderRule orderRule = orderRuleService.getOneByRoomNumber(roomNumber);
+                            if (orderRule != null){
+                                jdbcTemplate.update(new PreparedStatementCreator() {
+                                    @Override
+                                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                                        //指定主键
+                                        PreparedStatement preparedStatement = (PreparedStatement) connection.prepareStatement(insertSql);
+                                        preparedStatement.setString(1, roomNumber);
+                                        preparedStatement.setString(2, seatNumber);
+                                        preparedStatement.setString(3, oneSeat.get("building"));
+                                        preparedStatement.setString(4, oneSeat.get("campus"));
+                                        preparedStatement.setString(5, orderRule.getOpenTime());
+                                        preparedStatement.setString(6, orderRule.getCloseTime());
+                                        preparedStatement.setInt(7, orderRule.getSingleOrderTime());
+                                        return preparedStatement;
+                                    }
+                                });
 
-                            loggerUtils.info("添加自习室 " + roomNumber + " 下的 " + seatNumber + " 座位");
+                                loggerUtils.info("添加自习室 " + roomNumber + " 下的 " + seatNumber + " 座位");
+                            }
                         }
                     }
+
                 }
             }
         }catch (Exception e){
@@ -153,7 +163,7 @@ public class OrderSeatService {
 
     public OrderSeat getOneByMixNumber(String roomNumber, String seatNumber) throws Exception{
         OrderSeat orderSeat = null;
-        String sql = "select `id`,`seat_number`,`room_number`,`building`,`order_status`,`order_start_time`,`order_end_time`,`order_max_time` from order_seat where ";
+        String sql = "select `id`,`seat_number`,`room_number`,`building`,`campus`,`order_status`,`order_start_time`,`order_end_time`,`order_max_time` from order_seat where ";
         sql += "`room_number`='" +roomNumber +"' and `seat_number`='" + seatNumber +"'";
         try{
             orderSeat = jdbcTemplate.queryForObject(sql, new RowMapper<OrderSeat>() {
@@ -164,6 +174,7 @@ public class OrderSeatService {
                     row.setSeatNumber(rs.getString("seat_number"));
                     row.setRoomNumber(rs.getString("room_number"));
                     row.setBuilding(rs.getString("building"));
+                    row.setCampus(rs.getString("campus"));
                     row.setOrderStatus(rs.getInt("order_status"));
                     row.setOrderStartTime(rs.getString("order_start_time"));
                     row.setOrderEndTime(rs.getString("order_end_time"));

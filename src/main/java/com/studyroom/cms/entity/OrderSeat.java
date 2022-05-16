@@ -14,6 +14,8 @@ public class OrderSeat {
 
     private String building;
 
+    private String campus;
+
         //boolean? or not
     private int orderStatus;
 
@@ -87,4 +89,11 @@ public class OrderSeat {
         this.orderMaxTime = orderMaxTime;
     }
 
+    public String getCampus() {
+        return campus;
+    }
+
+    public void setCampus(String campus) {
+        this.campus = campus;
+    }
 }

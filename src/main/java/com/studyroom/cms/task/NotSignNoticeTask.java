@@ -36,7 +36,7 @@ public class NotSignNoticeTask {
     //学生信息表 student
 
     //每天0点10分、1点10分....到21点10分运行
-//    @Scheduled(cron="0 10 0-21 * * ?")   //TODO 删除注释
+    @Scheduled(cron="0 10 0-21 * * ?")
     public void process(){
         //假设当前时间为20220511 13:10
         Date date = new Date();
@@ -65,7 +65,7 @@ public class NotSignNoticeTask {
                     //4.调用邮件服务发送邮件
                     for(String stuNumber : emailMap.keySet()){
                         if (mailContent.containsKey(stuNumber)){
-                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "自习室未签到提醒",mailContent.get(stuNumber));
+//                            emailSendUtils.EmailSendLogic_single(emailMap.get(stuNumber), "自习室未签到提醒",mailContent.get(stuNumber));
                             loggerUtils.info("学生" + stuNumber + "的自习室未签到提醒邮件发送成功");
                         }
                     }

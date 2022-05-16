@@ -33,7 +33,7 @@ public class ReleaseSeatTask {
     //学生预约信息表 student_order_message
 
     //每天0点30分、1点分....21点30分运行
-//    @Scheduled(cron="0 30 0-21 * * ?")   //TODO 删除注释
+    @Scheduled(cron="0 30 0-21 * * ?")
     public void process(){
         //假设当前时间为20220511 14:30
         Date date = new Date();
