@@ -110,7 +110,7 @@ public class OrderRuleService {
             }
         }catch (Exception e){
             e.printStackTrace();
-            throw new customException(ExceptionCodeEnum.GET_ROOM_BY_TIME_FAIL);
+            throw new customException(ExceptionCodeEnum.GET_EFFECT_ROOM_BY_TIME_FAIL);
         }
         return ret;
     }

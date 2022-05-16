@@ -34,7 +34,7 @@ public class StudySeatServiceTest {
     public void batchAdd() {
         String rooNumber = "JA999";
         int seatCount = 2;
-        boolean ret = studySeatService.batchAdd(rooNumber,"A教学楼",seatCount);
+        boolean ret = studySeatService.batchAdd(rooNumber,"A教学楼","江湾",seatCount);
         Assert.assertNotNull(ret);
     }
 
