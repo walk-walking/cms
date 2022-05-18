@@ -46,7 +46,6 @@ public class StudentService {
     }
 
     public int addOne(HashMap<String,String> data) throws Exception{
-        int retId = 0;
         String sql = "insert into `student` (`number`,`name`,`sex`,`campus`,`email`,`finish_year`,`password`) values (?,?,?,?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
@@ -65,16 +64,13 @@ public class StudentService {
                     return preparedStatement;
                 }
             }, keyHolder);
-            retId = keyHolder.getKey().intValue();
-        }catch (DuplicateKeyException de){
-            //已有相同学号
+            int retId = keyHolder.getKey().intValue();
+            return retId;
         }catch (Exception e){
             //其他异常错误
             e.printStackTrace();
             throw new Exception("mysql execute error");
         }
-
-        return retId;
     }
 
     public Student getOneByNumber(String number) throws Exception{

@@ -43,12 +43,12 @@ public class StudentController {
 
             //type 1-add 2-修改
             if(type == 1){
-                int id = studentService.addOne(needParams);
-                if (id == 0){
+                Student stu = studentService.getOneByNumber(needParams.get("number"));
+                if (stu != null){
                     return Result.fail(ResultCodeEnum.USER_HAS_EXIST);
-                }else{
-                    return Result.success(new HashMap<String,Object>(){{put("id",id);}});
                 }
+                int id = studentService.addOne(needParams);
+                return Result.success(new HashMap<String,Object>(){{put("id",id);}});
             }else{
                 int effectRow = studentService.modOne(needParams);
                 if (effectRow == 0) {
@@ -158,6 +158,11 @@ public class StudentController {
             String email = request.getParameter("email");
             if (number == null || number == "" || email == null || email == ""){
                 return Result.fail(ResultCodeEnum.MISS_PARAM);
+            }
+
+            Student stu = studentService.getOneByNumber(number);
+            if (stu == null){
+                return Result.fail(ResultCodeEnum.USER_NOT_EXIST);
             }
 
             int effectId = studentService.modOneColumn("email",email,number);
