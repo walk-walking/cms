@@ -167,7 +167,7 @@ public class ReserveService {
             return Result.fail(ResultCodeEnum.SIGNIN_TIME_OUT);
         }
         //提前15分钟签到
-        if(timeDistance(getNowTime(),ST,-900)){
+        if(timeDistance(getNowTime(),ST,-3600)){
             return Result.fail(ResultCodeEnum.SIGNIN_TIME_TOO_EARLY);
         }
 
@@ -476,8 +476,10 @@ public class ReserveService {
         int count = 0;
         for(int i = pageSize*(page-1) ; i < som.size(); i ++){
             StudentOrderMessage thisSOM = som.get(i);
-            thisSOM.setOrderStartTimeSTR(dateToString(thisSOM.getOrderStartTime()).substring(11,16));
-            thisSOM.setOrderEndTimeSTR(dateToString(thisSOM.getOrderEndTime()).substring(11,16));
+//            thisSOM.setOrderStartTimeSTR(dateToString(thisSOM.getOrderStartTime()).substring(11,16));
+//            thisSOM.setOrderEndTimeSTR(dateToString(thisSOM.getOrderEndTime()).substring(11,16));
+            thisSOM.setOrderStartTimeSTR(dateToString(thisSOM.getOrderStartTime()).substring(0,16));
+            thisSOM.setOrderEndTimeSTR(dateToString(thisSOM.getOrderEndTime()).substring(0,16));
             resultOM.add(thisSOM);
             count++;
             if(count==pageSize){

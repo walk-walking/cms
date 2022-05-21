@@ -103,6 +103,7 @@ public class StudentOrderMessageService {
             sql.append("from `student_order_message` ");
             sql.append("where ");
             sql.append(condition);
+            sql.append(" order by `order_start_time` DESC");
 
             List<Map<String,Object>> sqlRet = jdbcTemplate.queryForList(sql.toString());
             for (int i = 0; i < sqlRet.size(); ++i){
