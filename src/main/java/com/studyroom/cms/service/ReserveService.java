@@ -79,9 +79,14 @@ public class ReserveService {
 
         //检查预约时间是否满足预约规则
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar calendar = Calendar.getInstance();
-        String nowTimeStr = sdf.format(calendar.getTime());
+//        Calendar calendar = Calendar.getInstance();
+//        String nowTimeStr = sdf.format(calendar.getTime());
+        String nowTimeStr = sdf.format(startTime);
 //        nowTimeStr = nowTimeStr.substring(11,16);
+        if(!checkTimeIn(os.getOrderStartTime(),os.getOrderEndTime(),nowTimeStr.substring(11,16))){
+            return Result.fail(ResultCodeEnum.RESERVE_TIME_ERROR);
+        }
+        nowTimeStr = sdf.format(endtime);
         if(!checkTimeIn(os.getOrderStartTime(),os.getOrderEndTime(),nowTimeStr.substring(11,16))){
             return Result.fail(ResultCodeEnum.RESERVE_TIME_ERROR);
         }
