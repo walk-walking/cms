@@ -31,7 +31,13 @@ public enum ResultCodeEnum {
     IS_CANCEL(15009,"已经取消过预约"),
     REVERSE_MESSAGE_QUERY_FAIL(15010,"查询对应学生NUMBER的有效预约信息失败"),
     PAGE_OR_PAGESIZE_LESS_THAN_ZERO(15011,"页码和页长小于等于0"),
-    RESERVE_TIME_ERROR(15012,"预约时间错误");
+    RESERVE_TIME_ERROR(15012,"预约时间错误"),
+    UPDATE_RULE_START_TIME_EMPTY(15101,"更改预约规则未设定起始时间"),
+    UPDATE_RULE_END_TIME_EMPTY(15102,"更改预约规则未设定结束时间"),
+    UPDATE_RULE_SINGLE_ORDER_TIME_EMPTY(15103,"未设定最大预约时间"),
+    UPDATE_RULE_ROOM_NUMBER_EMPTY(15104,"未设定房间号"),
+    ROOM_NUMBER_NOT_EXIST(15105,"房间号不存在")
+    ;
 
 
 

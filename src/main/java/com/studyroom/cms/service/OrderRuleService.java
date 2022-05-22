@@ -2,6 +2,8 @@ package com.studyroom.cms.service;
 
 import com.studyroom.cms.entity.OrderRule;
 import com.studyroom.cms.result.ExceptionCodeEnum;
+import com.studyroom.cms.result.Result;
+import com.studyroom.cms.result.ResultCodeEnum;
 import com.studyroom.cms.result.customException;
 import com.studyroom.cms.utils.LoggerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,39 @@ public class OrderRuleService {
         }
         return ret;
     }
+
+    /**
+     * 修改座位预约规则
+     * @throws customException
+     */
+    public Result updateValidRoom(String roomNumber, String opentime, String endtime, int singleOrderTime) throws customException{
+
+        try{
+            String sql = "select * from `order_rule` where `room_number` = '" + roomNumber + "'";
+            List<Map<String,Object>> result= jdbcTemplate.queryForList(sql);
+            String rs = result.get(0).get("room_number").toString();
+
+            if(rs == null){
+                return Result.fail(ResultCodeEnum.ROOM_NUMBER_NOT_EXIST);
+            }
+            if(singleOrderTime==-1){
+                singleOrderTime = Integer.parseInt(result.get(0).get("single_order_time").toString());
+            }
+            sql = "update `order_rule` set `open_time` = '" + opentime+ "',`close_time` = '" + endtime+ "',`single_order_time` = '" + singleOrderTime+ "'";
+            sql+= "where `room_number` = '" + roomNumber + "'";
+            jdbcTemplate.update(sql);
+
+
+
+            return Result.success();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.UPDATE_ORDER_RULE_TO_SEAT_FAIL);
+        }
+    }
+
+
 
     public List<String> getLatestRuledRooms() throws customException {
         List<String> ret = new ArrayList<>();
@@ -113,6 +148,10 @@ public class OrderRuleService {
             throw new customException(ExceptionCodeEnum.GET_EFFECT_ROOM_BY_TIME_FAIL);
         }
         return ret;
+    }
+
+    public void updateOrderRule_sql(){
+
     }
 
 }
