@@ -46,7 +46,6 @@ public class StudentService {
     }
 
     public int addOne(HashMap<String,String> data) throws Exception{
-        int retId = 0;
         String sql = "insert into `student` (`number`,`name`,`sex`,`campus`,`email`,`finish_year`,`password`) values (?,?,?,?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
@@ -65,16 +64,13 @@ public class StudentService {
                     return preparedStatement;
                 }
             }, keyHolder);
-            retId = keyHolder.getKey().intValue();
-        }catch (DuplicateKeyException de){
-            //已有相同学号
+            int retId = keyHolder.getKey().intValue();
+            return retId;
         }catch (Exception e){
             //其他异常错误
             e.printStackTrace();
             throw new Exception("mysql execute error");
         }
-
-        return retId;
     }
 
     public Student getOneByNumber(String number) throws Exception{
@@ -156,14 +152,31 @@ public class StudentService {
         return effecId;
     }
 
-    public HashMap<String,Object> getList(int page,int pageSize) throws Exception{
+    public HashMap<String,Object> getList(int page,int pageSize,HashMap<String,Object> condMap) throws Exception{
         HashMap<String,Object> res = new HashMap<>();
         int offset = (page - 1) * pageSize;
         int rowcnt = pageSize;
-        String sql = "select `number`,`name`,`sex`,`campus`,`email`,`finish_year`,`password` from `student` where `is_valid`=1 order by `id` desc limit " + offset + "," + rowcnt;
+        String sql = "select `number`,`name`,`sex`,`campus`,`email`,`finish_year`,`password` from `student` where `is_valid`=1";
+        String condition = "";
+        List<String> intColumns = Student.getIntColumn();
+        for (String key : condMap.keySet()){
+            if (!intColumns.contains(key)){
+                condition += "`" + key + "`='" + condMap.get(key) + "'";
+            }else{
+                condition += "`" + key + "`=" + condMap.get(key);
+            }
+            condition += " and ";
+        }
+        if (condition != ""){
+            condition = condition.substring(0,condition.length()-4);
+            sql += " and " + condition + "order by `id` desc limit " + offset + "," + rowcnt;
+        }else{
+            sql += " order by `id` desc limit "+ offset + "," + rowcnt;
+        }
+
         try{
             List<Map<String,Object>> rs = jdbcTemplate.queryForList(sql);
-            int count = getCount();
+            int count = getCount(condition);
             res.put("count",count);
             List<HashMap<String,Object>> data = new ArrayList<>();
             for (int i = 0; i < rs.size(); ++i){
@@ -186,9 +199,12 @@ public class StudentService {
         return res;
     }
 
-    public int getCount() throws Exception{
+    public int getCount(String condition) throws Exception{
         int count = 0;
         String sql = "select count(*) from `student` where `is_valid`=1";
+        if (condition != ""){
+            sql += " and " + condition;
+        }
         try{
             count = jdbcTemplate.queryForObject(sql,Integer.class);
         }catch (Exception e){
