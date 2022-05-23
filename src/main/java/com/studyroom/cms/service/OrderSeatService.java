@@ -228,10 +228,11 @@ public class OrderSeatService {
         try {
 //            String sql = "select `building`,`seat_number`,`order_start_time`,`order_status`,`order_end_time`,`order_max_time` from order_seat where ";
 //            sql += "`room_number`='" + roomNumber + "' and `order_status` = '-1'";
-            String sql = "select `building`,`seat_number`,`order_start_time`,`order_status`,`order_end_time`,`order_max_time` from order_seat where ";
-            sql += "`room_number`='" + roomNumber +"'";
+            String sql = "select `campus`,`building`,`seat_number`,`order_start_time`,`order_status`,`order_end_time`,`order_max_time` from order_seat where ";
+            sql += "`room_number`='" + roomNumber +"' and ";
+            sql += "`order_status` in (0,1)";
 
-            List<Map<String, Object>> sqlRet = jdbcTemplate.queryForList(sql.toString());
+            List<Map<String, Object>> sqlRet = jdbcTemplate.queryForList(sql);
             for (int i = 0; i < sqlRet.size(); ++i) {
                 OrderSeat one = new OrderSeat();
                 one.setSeatNumber(sqlRet.get(i).get("seat_number").toString());
@@ -240,6 +241,7 @@ public class OrderSeatService {
                 one.setBuilding(sqlRet.get(i).get("building").toString());
                 one.setOrderStatus(Integer.parseInt(sqlRet.get(i).get("order_status").toString()));
                 one.setRoomNumber(roomNumber);
+                one.setCampus(sqlRet.get(i).get("campus").toString());
                 one.setOrderMaxTime(Integer.parseInt(sqlRet.get(i).get("order_max_time").toString()));
                 orderSeats.add(one);
             }

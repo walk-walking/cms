@@ -306,34 +306,31 @@ public class ReserveService {
      */
     public Result queryUnReserverListLogic(String studyRoomNumber,int page,int limit){
         //使用StudentOrderMessageService的方法
-        List<StudentOrderMessage> ret = new ArrayList<>();
+//        List<StudentOrderMessage> ret = new ArrayList<>();
         List<OrderSeat> orderSeats = new ArrayList<>();
         try {
-            StringBuffer condition = new StringBuffer();
-            condition.append("`is_order_valid`=0 and ");
-            condition.append("`room_number`='");
-            condition.append(studyRoomNumber);
-            condition.append("'");
+//            StringBuffer condition = new StringBuffer();
+//            condition.append("`is_order_valid`=0 and ");
+//            condition.append("`room_number`='");
+//            condition.append(studyRoomNumber);
+//            condition.append("'");
 
-            ret = studentOrderMessageService.getOrderMessageByCondition(condition.toString());
+//            ret = studentOrderMessageService.getOrderMessageByCondition(condition.toString());
             //获取对应的OrderLogic
             orderSeats = orderSeatService.getUnReserveSeatByRoomNumber(studyRoomNumber);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Calendar calendar = Calendar.getInstance();
-            String nowTimeStr = sdf.format(calendar.getTime());
-            nowTimeStr = nowTimeStr.substring(11,16);
-            List<OrderSeat> delList = new ArrayList();
-            for(int i = 0 ; i < orderSeats.size();i++){
-                if(!checkTimeIn(orderSeats.get(i).getOrderStartTime(),orderSeats.get(i).getOrderEndTime(),nowTimeStr)){
-                    delList.add(orderSeats.get(i));
-                }
-            }
-            orderSeats.removeAll(delList);
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            Calendar calendar = Calendar.getInstance();
+//            String nowTimeStr = sdf.format(calendar.getTime());
+//            nowTimeStr = nowTimeStr.substring(11,16);
+//            List<OrderSeat> delList = new ArrayList();
+//            for(int i = 0 ; i < orderSeats.size();i++){
+//                if(!checkTimeIn(orderSeats.get(i).getOrderStartTime(),orderSeats.get(i).getOrderEndTime(),nowTimeStr)){
+//                    delList.add(orderSeats.get(i));
+//                }
+//            }
+//            orderSeats.removeAll(delList);
             int seatsize = orderSeats.size();
             orderSeats = orderSeatService.getList(limit,page,orderSeats);
-
-
-
 
             //return
             return Result.listSuccess(seatsize,orderSeats);
