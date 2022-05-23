@@ -37,10 +37,6 @@ public class OrderController {
             String closetime = request.getParameter("closetime");
             String singleMaxOrdertime = request.getParameter("singleOrderTime");
 
-            String numberValue = session.getAttribute(Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN).toString();
-            if(numberValue==null){
-                return Result.fail(ResultCodeEnum.NOT_LOGIN);
-            }
             if(roomNumber==null){
                 return Result.fail(ResultCodeEnum.UPDATE_RULE_ROOM_NUMBER_EMPTY);
             }
@@ -63,19 +59,11 @@ public class OrderController {
     @RequestMapping("/updateOS")
     public Result updateOrderSeat(HttpServletRequest request, HttpServletResponse response ,HttpSession session){
         try {
-            String numberValue = session.getAttribute(Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN).toString();
-            if(numberValue==null){
-                return Result.fail(ResultCodeEnum.NOT_LOGIN);
-            }
-
             String roomNumber = request.getParameter("roomNumber");
             String seatNumber = request.getParameter("seatNumber");
             int orderStatus = Integer.parseInt(request.getParameter("orderStatus"));
 
             return orderSeatService.updateSingleOrderRule(roomNumber,seatNumber,orderStatus);
-
-
-
         }catch (Exception e){
             return Result.error();
         }

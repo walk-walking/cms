@@ -20,7 +20,8 @@ public class LoginConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/student/info")
 
                 .addPathPatterns("/studyroom/**")
-                .addPathPatterns("/studyseat/**");
+                .addPathPatterns("/studyseat/**")
+                .addPathPatterns("/order/**");
 
         registry.addInterceptor(new StudentLoginInterceptor())
                 .addPathPatterns("/reserve/**")
