@@ -4,6 +4,7 @@ import com.studyroom.cms.entity.OrderRule;
 import com.studyroom.cms.entity.OrderSeat;
 import com.studyroom.cms.entity.StudyRoom;
 import com.studyroom.cms.result.ExceptionCodeEnum;
+import com.studyroom.cms.result.Result;
 import com.studyroom.cms.result.customException;
 import com.studyroom.cms.utils.LoggerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +103,29 @@ public class OrderSeatService {
             e.printStackTrace();
             throw new customException(ExceptionCodeEnum.UPDATE_ORDER_RULE_TO_SEAT_FAIL);
         }
+    }
+
+    /**
+     * 有特殊情况时,可以直接设置某间房间的某个座位能使用/不能使用
+     */
+    public Result updateSingleOrderRule(String roomNumber, String seatNumber, int orderStatus){
+        try {
+            String updateSql = "update `order_seat` set `order_status` = " + orderStatus ;
+            updateSql += " where `room_number` = '" + roomNumber + "' and `seat_number` = " + seatNumber ;
+            jdbcTemplate.update(updateSql);
+
+            return Result.success();
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            throw new customException(ExceptionCodeEnum.UPDATE_ORDER_RULE_TO_SEAT_FAIL);
+
+        }
+
+
+
+
     }
 
     public void delOrAddSeat(List<HashMap<String,String>> latestModSeats) throws customException{

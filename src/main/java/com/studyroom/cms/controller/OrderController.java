@@ -31,7 +31,6 @@ public class OrderController {
     @RequestMapping("/updateOR")
     public Result updateOrderRule(HttpServletRequest request, HttpServletResponse response ,HttpSession session){
 
-
         try {
             String roomNumber = request.getParameter("roomNumber");
             String opentime = request.getParameter("opentime");
@@ -39,10 +38,6 @@ public class OrderController {
             String singleMaxOrdertime = request.getParameter("singleOrderTime");
 
             String numberValue = session.getAttribute(Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN).toString();
-            System.out.println(numberValue);
-
-
-
             if(numberValue==null){
                 return Result.fail(ResultCodeEnum.NOT_LOGIN);
             }
@@ -59,14 +54,31 @@ public class OrderController {
             if(singleMaxOrdertime!=null){
                 singleMaxOrderTimeInt = Integer.parseInt(singleMaxOrdertime);
             }
-
-
             return orderRuleService.updateValidRoom(roomNumber,opentime,closetime,singleMaxOrderTimeInt);
         }catch (Exception e){
             return Result.error();
         }
+    }
+
+    @RequestMapping("/updateOS")
+    public Result updateOrderSeat(HttpServletRequest request, HttpServletResponse response ,HttpSession session){
+        try {
+            String numberValue = session.getAttribute(Const.SAVE_ADMIN_LOGIN_MESSAGE_COLUMN).toString();
+            if(numberValue==null){
+                return Result.fail(ResultCodeEnum.NOT_LOGIN);
+            }
+
+            String roomNumber = request.getParameter("roomNumber");
+            String seatNumber = request.getParameter("seatNumber");
+            int orderStatus = Integer.parseInt(request.getParameter("orderStatus"));
+
+            return orderSeatService.updateSingleOrderRule(roomNumber,seatNumber,orderStatus);
 
 
+
+        }catch (Exception e){
+            return Result.error();
+        }
     }
 
 
